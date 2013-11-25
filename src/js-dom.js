@@ -13,17 +13,15 @@
     }
 
     function _isArray(object) {
-        if (Object.prototype.toString.call( object ) === '[object Array]' ) {
-            return true;
-        }
-        return false;
+        return Object.prototype.toString.call(object) === '[object Array]';
     }
 
     function _isString(object) {
-        if (typeof object === 'string' ) {
-            return true;
-        }
-        return false;
+        return typeof object === 'string';
+    }
+
+    function _isObject(object) {
+        return typeof object === 'object';
     }
 
 
@@ -33,6 +31,16 @@
         }
         return false;
     }
+
+    function _isDomNode(object) {
+        try {
+            return object instanceof HTMLElement;
+        }
+        catch(e){
+            return (typeof object === 'object') && (object.nodeType === 1) && (typeof object.ownerDocument === 'object');
+        }
+    }
+
 
     var addListener = document.addEventListener ? 'addEventListener' : 'attachEvent',
         removeListener = document.removeEventListener ? 'removeEventListener' : 'detachEvent',
@@ -44,7 +52,7 @@
 
     //trident 4?
     var ua = navigator.userAgent;
-    var re  = new RegExp("Trident/([0-9]{1,}[\.0-9]{0,})");
+    var re  = new RegExp('Trident/([0-9]{1,}[\.0-9]{0,})');
     if (re.exec(ua) != null) {
         rv = parseFloat( RegExp.$1 );
         if (rv == 4) {
@@ -157,15 +165,14 @@
         if (element === undefined) {
             return false;
         }
+
         if (_isIterable(element)) {
             for (var i = 0, n = element.length; i < n; i++) {
                 Dom.addListener(element[i], event, listener);
             }
             return element;
         }
-        if (element.nodeType != 1) {
-            return false;
-        }
+
         element._event = element._event || {};
         element._event[event] = element._event[event] || { keys:[], values:[] };
 
@@ -196,6 +203,17 @@
      * @returns {Event}
      */
     Dom.dispatch = function(element, type, options) {
+        if (element === undefined) {
+            return false;
+        }
+
+        if (_isIterable(element)) {
+            for (var i = 0, n = element.length; i < n; i++) {
+                Dom.dispatch(element[i], type, options);
+            }
+            return element;
+        }
+
         if (!options) {
             options = {};
         }
@@ -268,9 +286,6 @@
                 Dom.removeListener(element[i], event, listener);
             }
             return element;
-        }
-        if (!element['nodeType'] !== undefined || element.nodeType != 1) {
-            return false;
         }
 
         if (!element._event || !element._event[event]) {
@@ -347,7 +362,7 @@
     /* Dom Manipulation */
 
     Dom.find = function (selector) {
-
+        return document.querySelectorAll(selector);
     };
 
     Dom.id = function (id) {
@@ -390,11 +405,15 @@
             return css;
         }
 
-        //set csses
-        for (var i in style) {
-            element.style[cssNameProperty(i)] = style[i];
+        if (_isObject(style)) {
+            //set csses
+            for (var i in style) {
+                element.style[cssNameProperty(i)] = style[i];
+            }
+            return style;
         }
-        return style;
+
+        return false;
     };
 
     /**
@@ -402,7 +421,7 @@
      * @param string
      */
     Dom.create = function(string) {
-
+        return document.createDocumentFragment(string);
     };
 
     /**
@@ -412,13 +431,115 @@
      */
     Dom.html = function(element, string) {
 
+        if (_isString(string)) {
+            element.innerHTML = string;
+            return string;
+        }
+
+        return element.innerHTML;
+    };
+
+    Dom.text = function(element, string) {
+
+        if (_isString(string)) {
+
+            if (element.innerText) {
+                element.innerText = string;
+            } else {
+                element.textContent = string;
+            }
+            return string;
+        }
+
+        if (element.innerText) {
+            return element.innerText;
+        }
+
+        return element.textContent;
+    };
+
+    Dom.parent = function(element) {
+
+        return element.parentNode;
+    };
+
+    Dom.children = function(element) {
+
+        return element.childNodes;
+    };
+
+    /**
+     *
+     * @param element
+     * @param {String|HTMLElement} html
+     */
+    Dom.append = function(element, html) {
+
+        if (_isString(html)) {
+            html = Dom.create(html);
+        }
+        element.appendChild(html);
+        return html;
+    };
+
+    Dom.prepend = function(element, html) {
+
+        if (_isString(html)) {
+            html = Dom.create(html);
+        }
+        element.insertBefore(html, element.firstChild);
+        return html;
+    };
+
+    Dom.after = function(element, html) {
+
+        if (_isString(html)) {
+            html = Dom.create(html);
+        }
+
+        element.parentNode.insertBefore(html, element.nextSibling);
+        return html;
+    };
+
+    Dom.before = function(element, html) {
+
+        if (_isString(html)) {
+            html = Dom.create(html);
+        }
+
+        element.insertBefore(html, element);
+        return html;
+    };
+
+    Dom.next = function(element) {
+        return element.nextSibling;
+    };
+
+    Dom.previous = function(element) {
+        return element.previousSibling;
+    };
+
+    Dom.replace = function(element, html) {
+        if (_isString(html)) {
+            html = Dom.create(html);
+        }
+        element.parentNode.replaceChild(html, element);
+        return html;
+    };
+
+    Dom.remove = function(element) {
+        var parent = element.parentNode;
+        return parent.removeChild(element);
     };
 
     /**
      * Gets or sets element attributes
+     * if the attribute is not defined this method
+     * return an empty string
+     *
      * @param element
      * @param name
-     * @param {*} attribute
+     * @param {*} attribute attribute name or names
      *
      * @example
      * Dom.attribute(el, "href"); // returns href attribute's value of the element
@@ -427,6 +548,51 @@
      */
     Dom.attribute = function(element, attribute)  {
 
+        //get one attribute
+        if (typeof attribute === "string") {
+
+            var result;
+
+            if (attribute === 'class' && element['className'] !== undefined) {//class?
+                result = element.className;
+            } else if (attribute === 'for' && element['htmlFor'] !== undefined) {//for?
+                result = element.htmlFor;
+            } else if (attribute === 'value' && element['value'] !== undefined) {//value?
+                result = element.value;
+            } else {
+                result = element.getAttribute(attribute);
+            }
+
+            if (result === '') {
+                result = null;
+            }
+            return result;
+        }
+
+        //get many
+        if (_isArray(attribute)) {
+            var result = {};
+            for (var i in attribute) {
+                result[attribute[i]] = Dom.attribute(element, attribute[i]);
+            }
+            return result;
+        }
+
+        //set attribute(s)
+        if (_isObject(attribute)) {
+            for (var i in attribute) {
+
+
+                if (attribute[i] === null) {
+                    element.removeAttribute(i);
+                } else {
+                    element.setAttribute(i, attribute[i]);
+                }
+            }
+            return attribute;
+        }
+
+        return false;
     };
 
     //export dom
