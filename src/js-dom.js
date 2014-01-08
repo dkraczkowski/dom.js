@@ -69,22 +69,6 @@
         return false;
     }
 
-    /**
-     * Checks if given object is a HTMLElement
-     * @param {Object} object
-     * @returns {boolean}
-     * @private
-     */
-    function _isDomNode(object) {
-        try {
-            return object instanceof HTMLElement;
-        }
-        catch(e){
-            return (typeof object === 'object') && (object.nodeType === 1) && (typeof object.ownerDocument === 'object');
-        }
-    }
-
-
     var addListener = document.addEventListener ? 'addEventListener' : 'attachEvent',
         removeListener = document.removeEventListener ? 'removeEventListener' : 'detachEvent',
         eventPrefix = document.addEventListener ? '' : 'on',
@@ -342,7 +326,7 @@
         }
 
         var key = _indexOf(element._event[event].keys, listener);
-        if (key == -1) {
+        if (key === -1) {
             return false;
         }
         var _listener = element._event[event].values[key];
@@ -500,7 +484,7 @@
         if (!element._event || !element._event[event]) {
             return false;
         }
-        return _indexOf(element._event[event].keys, listener) != -1;
+        return _indexOf(element._event[event].keys, listener) !== -1;
     };
 
     /* Dom Manipulation */
@@ -851,7 +835,11 @@
         if (element === undefined) {
             return false;
         }
-        var attribute = Dom.attribute(element, "class").split(" ");
+        var attribute = Dom.attribute(element, 'class');
+        if (!attribute) {
+            return [];
+        }
+        attribute = attribute.split(' ');
         var classNames = [];
         for (var i in attribute) {
             if (attribute[i] === '') {
@@ -875,11 +863,11 @@
         }
 
         if (_isString(className)) {
-            return _indexOf(Dom.getClass(element), className);
+            return _indexOf(Dom.getClass(element), className) > -1 ? true : false;
         } else if (_isArray(className)) {
             var elementClasses = Dom.getClass(element);
             for (var i in className) {
-                if (!_indexOf(className[i], elementClasses)) {
+                if (_indexOf(className[i], elementClasses) === -1) {
                     return false;
                 }
             }
@@ -891,17 +879,68 @@
         return false;
     };
 
+    /**
+     * Assignes css class(es) to the html element(s)
+     *
+     * @param {HTMLElement} element
+     * @param {String} className
+     * @returns {boolean}
+     */
     Dom.addClass = function(element, className) {
         if (element === undefined) {
             return false;
         }
 
+        if (_isIterable(element)) {
+            for (var i = 0, n = element.length; i < n; i++) {
+                Dom.addClass(element[i], className);
+            }
+            return;
+        }
+
+        if (_isArray(className)) {
+            for (var i in className) {
+                Dom.addClass(element, className[i]);
+            }
+            return;
+        }
+
+        var classes = Dom.getClass(element);
+
+        if (_indexOf(classes, className) === -1) {
+            classes.push(className);
+        }
+        classes = classes.join(' ');
+        Dom.attribute(element, {class: classes});
     };
 
+    /**
+     * Remove css class(es) from the html element(s)
+     *
+     * @param element
+     * @param className
+     * @returns {boolean}
+     */
     Dom.removeClass = function(element, className) {
         if (element === undefined) {
-            return false;
+            return;
         }
+
+        if (_isIterable(element)) {
+            for (var i = 0, n = element.length; i < n; i++) {
+                Dom.removeClass(element[i], className);
+            }
+            return;
+        }
+
+        var classes = Dom.getClass(element);
+        var i = _indexOf(classes, className);
+
+        if (i === -1) {
+            return;
+        }
+        classes.splice(i, 1);
+        return Dom.attribute(element, {class: classes.join(' ')});
 
     };
 
