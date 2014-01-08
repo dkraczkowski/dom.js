@@ -1,5 +1,19 @@
+/**
+ * DOM.js is a lightweight & fast cross browser library for
+ * dom traversal and manipulation.
+ *
+ * @author Dawid Kraczowski <Mighty Mosquito>
+ * @license MIT
+ */
 ;(function (window, document, undefined) {
 
+    /**
+     * Array.indexOf support
+     * @param {Array} array
+     * @param {*} obj
+     * @returns {number}
+     * @private
+     */
     function _indexOf(array, obj) {
         if (Array.prototype.indexOf) {
             return Array.prototype.indexOf.call(array, obj);
@@ -12,19 +26,42 @@
         return -1;
     }
 
+    /**
+     * Checks if given value is an array
+     * @param {*} object
+     * @returns {boolean}
+     * @private
+     */
     function _isArray(object) {
         return Object.prototype.toString.call(object) === '[object Array]';
     }
 
+    /**
+     * Checks if given value is a string
+     * @param {*} object
+     * @returns {boolean}
+     * @private
+     */
     function _isString(object) {
         return typeof object === 'string';
     }
 
+    /**
+     * Checks if given value is an object
+     * @param {*} object
+     * @returns {boolean}
+     * @private
+     */
     function _isObject(object) {
         return typeof object === 'object';
     }
 
-
+    /**
+     * Checks if object is iterable
+     * @param {Object} object
+     * @returns {boolean}
+     * @private
+     */
     function _isIterable(object) {
         if (object['length'] !== undefined && object.length > 0) {
             return true;
@@ -32,6 +69,12 @@
         return false;
     }
 
+    /**
+     * Checks if given object is a HTMLElement
+     * @param {Object} object
+     * @returns {boolean}
+     * @private
+     */
     function _isDomNode(object) {
         try {
             return object instanceof HTMLElement;
@@ -50,7 +93,7 @@
         Dom = {},
         cssNameProperty = function(prop) {return prop;};
 
-    //trident 4?
+    //is trident 4?
     var ua = navigator.userAgent;
     var re  = new RegExp('Trident/([0-9]{1,}[\.0-9]{0,})');
     if (re.exec(ua) != null) {
@@ -65,6 +108,7 @@
 
     /**
      * Normalized Event object
+     *
      * @param {DOMEvent} e
      * @constructor
      */
@@ -125,12 +169,14 @@
     Dom.Event.ON_MOUSEOVER = 'mouseover';
     Dom.Event.ON_MOUSEOUT = 'mouseout';
     Dom.Event.ON_MOUSEUP = "mouseup";
+
     /**
      * Keyboard events
      */
     Dom.Event.ON_KEYDOWN = "keydown";
     Dom.Event.ON_KEYUP = "keyup";
     Dom.Event.ON_KEYPRESS = "keypress";
+
     /**
      * UI Events
      */
@@ -143,6 +189,7 @@
     Dom.Event.ON_SCROLL = "scroll";
     Dom.Event.ON_RESET = "reset";
     Dom.Event.ON_SUBMIT = "submit";
+
     /**
      * Drag and drop events
      */
@@ -155,11 +202,13 @@
     Dom.Event.ON_DROP = "drop";
 
     /**
-     * Attach listener on element
-     * @param {DOMNode|NodeList} element
+     * Attach javascript listener on an element
+     *
+     * @param {HTMLElement|NodeList} element
      * @param {String} event
      * @param {Function} listener
-     * @returns {*}
+     *
+     * @returns {HTMLElement|false} returns HTMLElement if listener has been attached
      */
     Dom.addListener = function (element, event, listener) {
         if (element === undefined) {
@@ -197,9 +246,9 @@
 
     /**
      * Dispatches an event of given type
-     * @param element
-     * @param type
-     * @param options
+     * @param {HTMLElement|NodeList} element
+     * @param {string} type
+     * @param {Object} options event options
      * @returns {Event}
      */
     Dom.dispatch = function(element, type, options) {
@@ -272,7 +321,7 @@
 
     /**
      * Removes previously attached event
-     * @param {DOMNode|NodeList} element
+     * @param {HTMLElement|NodeList} element
      * @param {String} event
      * @param {Function} listener
      * @returns {*}
@@ -307,51 +356,146 @@
 
     /* Dom Event Aliases */
 
+    /**
+     * Bind an event handler to the “click” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param {Function} listener
+     * @returns {HTMLElement|false}
+     */
     Dom.onClick = function (element, listener) {
         return Dom.addListener(element, Dom.Event.ON_CLICK, listener);
     };
 
+    /**
+     * Bind an event handler to the “dblclick” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
     Dom.onDblclick = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_DBLCLICK, listener);
     };
 
+    /**
+     * Bind an event handler to the “onmouseover” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
     Dom.onMouseOver = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSEOVER, listener);
     };
 
+    /**
+     * Bind an event handler to the “onmouseout” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
     Dom.onMouseOut = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSEOUT, listener);
     };
 
+    /**
+     * Bind an event handler to the “onmousedown” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
     Dom.onMouseDown = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSEDOWN, listener);
     };
 
+    /**
+     * Bind an event handler to the “onmouseup” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
     Dom.onMouseUp = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSEUP, listener);
     };
 
+    /**
+     * Bind an event handler to the “onmouseenter” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
     Dom.onMouseEnter = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSEENTER, listener);
     };
 
+    /**
+     * Bind an event handler to the “onmouseleave” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
     Dom.onMouseLeave = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSELEAVE, listener);
     };
 
+    /**
+     * Bind an event handler to the “ondrag” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
     Dom.onDrag = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_DRAG, listener);
     };
 
+    /**
+     * Bind an event handler to the “ondragstart” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
     Dom.onDragStart = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_DRAGSTART, listener);
     };
 
+    /**
+     * Bind an event handler to the “ondragend” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
     Dom.onDragEnd = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_DRAGEND, listener);
     };
 
-
+    /**
+     * Determine whether a supplied listener is attached to the element
+     *
+     * @param {HTMLElement} element
+     * @param {String} event
+     * @param {Function} listener
+     * @returns {boolean}
+     */
     Dom.hasListener = function (element, event, listener) {
         if (!element._event || !element._event[event]) {
             return false;
@@ -361,18 +505,44 @@
 
     /* Dom Manipulation */
 
+    /**
+     * Finds HTMLElements that match css pattern
+     *
+     * Supported from IE 8.0, FF 3.5, Chrome 4.0, Safari 3.1
+     * @param {String} selector
+     * @returns {NodeList}
+     */
     Dom.find = function (selector) {
         return document.querySelectorAll(selector);
     };
 
+    /**
+     * Finds HTMLElement with given id
+     *
+     * @param {String} id
+     * @returns {HTMLElement}
+     */
     Dom.id = function (id) {
         return document.getElementById(id);
     };
 
+    /**
+     * Finds HTMLElements that match given tagname
+     *
+     * @param {String} name
+     * @returns {NodeList}
+     */
     Dom.findByTagName = function (name) {
         return document.getElementsByTagName(name);
     };
 
+    /**
+     * Finds HTMLElements with given class name
+     *
+     * Supported from IE 8.0, FF 3.5, Chrome 4.0, Safari 3.1
+     * @param name
+     * @returns {NodeList}
+     */
     Dom.findByClass = function (name) {
         if (name.substring(0,1) == ".") {
             name = name.substring(1);
@@ -389,6 +559,13 @@
 
     /* Dom Manipulation */
 
+    /**
+     * Sets or gets HTMLElement's style
+     *
+     * @param {HTMLElement} element
+     * @param {Object} style key value pair object
+     * @returns {Object|false}
+     */
     Dom.css = function(element, style) {
 
         //get one element
@@ -417,17 +594,21 @@
     };
 
     /**
-     * Create dom element
-     * @param string
+     * Creates html element
+     *
+     * @param {String} string
+     * @return {HTMLElement}
      */
     Dom.create = function(string) {
         return document.createDocumentFragment(string);
     };
 
     /**
-     *  Gets or sets innerHtml of element
-     * @param element
-     * @param string
+     * Gets or sets inner html of HTMLElement
+     *
+     * @param {HTMLElement} element
+     * @param {String} string
+     * @returns {String}
      */
     Dom.html = function(element, string) {
 
@@ -439,6 +620,13 @@
         return element.innerHTML;
     };
 
+    /**
+     * Gets or sets text value of the HTML element
+     *
+     * @param {HTMLElement} element
+     * @param {String} string
+     * @returns {*}
+     */
     Dom.text = function(element, string) {
 
         if (_isString(string)) {
@@ -458,20 +646,32 @@
         return element.textContent;
     };
 
+    /**
+     * Gets the parent of html element
+     *
+     * @param {HTMLElement} element
+     * @returns {HTMLElement}
+     */
     Dom.parent = function(element) {
-
         return element.parentNode;
     };
 
+    /**
+     * Gets children elements of html element
+     *
+     * @param {HTMLElement} element
+     * @returns {NodeList}
+     */
     Dom.children = function(element) {
 
         return element.childNodes;
     };
 
     /**
-     *
-     * @param element
+     * Inserts content specified by the html argument at the end of HTMLElement
+     * @param {HTMLElement} element
      * @param {String|HTMLElement} html
+     * @return {HTMLElement} inserted element
      */
     Dom.append = function(element, html) {
 
@@ -482,6 +682,13 @@
         return html;
     };
 
+    /**
+     * Inserts content specified by the html argument at the beginning of HTMLElement
+     *
+     * @param {HTMLElement} element
+     * @param {String|HTMLElement} html
+     * @returns {HTMLElement} inserted element
+     */
     Dom.prepend = function(element, html) {
 
         if (_isString(html)) {
@@ -491,6 +698,13 @@
         return html;
     };
 
+    /**
+     * Inserts content specified by the html argument before the HTMLElement
+     *
+     * @param {HTMLElement} element
+     * @param {String|HTMLElement} html
+     * @returns {HTMLElement} inserted element
+     */
     Dom.after = function(element, html) {
 
         if (_isString(html)) {
@@ -501,6 +715,13 @@
         return html;
     };
 
+    /**
+     * Inserts content specified by the html argument before the HTMLElement
+     *
+     * @param {HTMLElement} element
+     * @param {String|HTMLElement} html
+     * @returns {HTMLElement} inserted element
+     */
     Dom.before = function(element, html) {
 
         if (_isString(html)) {
@@ -511,14 +732,33 @@
         return html;
     };
 
+    /**
+     * Gets following sibling element of the HTMLElement
+     *
+     * @param {HTMLElement} element
+     * @returns {HTMLElement}
+     */
     Dom.next = function(element) {
         return element.nextSibling;
     };
 
+    /**
+     * Gets previous sibling element of the HTMLElement
+     *
+     * @param {HTMLElement} element
+     * @returns {HTMLElement}
+     */
     Dom.previous = function(element) {
         return element.previousSibling;
     };
 
+    /**
+     * Replaces given html element with content specified in html parameter
+     *
+     * @param {HTMLElement} element
+     * @param {String|HTMLElement} html
+     * @returns {HTMLElement} inserted element
+     */
     Dom.replace = function(element, html) {
         if (_isString(html)) {
             html = Dom.create(html);
@@ -527,6 +767,12 @@
         return html;
     };
 
+    /**
+     * Removes HTMLElement from dom treee
+     *
+     * @param {HTMLElement} element
+     * @returns {HTMLElement} removed element
+     */
     Dom.remove = function(element) {
         var parent = element.parentNode;
         return parent.removeChild(element);
@@ -593,6 +839,70 @@
         }
 
         return false;
+    };
+
+    /**
+     * Gets css classes of the given element
+     *
+     * @param {HTMLElement} element
+     * @returns {Array}
+     */
+    Dom.getClass = function(element) {
+        if (element === undefined) {
+            return false;
+        }
+        var attribute = Dom.attribute(element, "class").split(" ");
+        var classNames = [];
+        for (var i in attribute) {
+            if (attribute[i] === '') {
+                continue;
+            }
+            classNames.push(attribute[i]);
+        }
+        return classNames;
+    };
+
+    /**
+     * Checks whether html element is assigned to the given class(es)
+     *
+     * @param element
+     * @param {String|Array} className
+     * @returns {boolean}
+     */
+    Dom.hasClass = function(element, className) {
+        if (element === undefined) {
+            return false;
+        }
+
+        if (_isString(className)) {
+            return _indexOf(Dom.getClass(element), className);
+        } else if (_isArray(className)) {
+            var elementClasses = Dom.getClass(element);
+            for (var i in className) {
+                if (!_indexOf(className[i], elementClasses)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+
+        return false;
+    };
+
+    Dom.addClass = function(element, className) {
+        if (element === undefined) {
+            return false;
+        }
+
+    };
+
+    Dom.removeClass = function(element, className) {
+        if (element === undefined) {
+            return false;
+        }
+
     };
 
     //export dom
