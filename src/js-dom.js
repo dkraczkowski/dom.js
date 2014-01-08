@@ -186,7 +186,7 @@
     Dom.Event.ON_DROP = "drop";
 
     /**
-     * Attach javascript listener on an element
+     * Attaches javascript listener to the element
      *
      * @param {HTMLElement|NodeList} element
      * @param {String} event
