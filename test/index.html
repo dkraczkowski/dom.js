@@ -1,37 +1,27 @@
-<!DOCTYPE html>
+<!doctype html>
 <html>
 <head>
-    <title></title>
-    <script type="text/javascript" src="../src/js-dom.js"></script>
+    <meta charset="utf-8">
+    <title>Dom.addListener</title>
+    <script src="../src/dom.js"></script>
 </head>
 <body>
-<div draggable="true" style="position: absolute; border: 1px solid black; top: 50px; left: 30px; background: red; width: 50px; height: 50px" class="test1" id="test1">test 1</div>
-<div class="test1 test2" id="test2">test 2</div>
-<a href="#" class="link1" id="link1">link1</a>
-<a href="#" class="link1 link2" id="link2">link2</a>
+<ul>
+    <li><a href="#1">click me</a></li>
+    <li><a href="#2">click me</a></li>
+    <li><a href="#3">click me</a></li>
+</ul>
+
 <script type="text/javascript">
 
-    var lis = function(e){
-        alert("o tak!");
-        //console.log(e.event());
-    };
-    var el = Dom.id("test1");
-    Dom.onClick(el, lis);
+    //Attaching event listener to many elements
+    Dom.addListener(Dom.findByTagName('a'), Dom.Event.ON_CLICK, function(event) {
+        event.preventDefault();
+        alert('element ' + this + ' was clicked');
+    });
 
-
-    Dom.css(el, {"border-width" : "5px"});
-    //alert(Dom.css(el, "border-width"));
-    alert(Dom.css(el, "border-color"));
-
-
-
-    Dom.dispatch(el, Dom.Event.ON_CLICK);
-
-    Dom.css(el, {"background-color" : "green"});
-
-
-
-
+    //Dispatching click event
+    Dom.dispatch(Dom.findByTagName('a'), Dom.Event.ON_CLICK);
 </script>
 </body>
 </html>

@@ -144,49 +144,57 @@
      * Mouse events
      */
     Dom.Event.ON_CLICK = 'click';
-    Dom.Event.ON_DBLCLICK = "dblclick";
-    Dom.Event.ON_CONTEXTMENU = "contextmenu";
-    Dom.Event.ON_MOUSEDOWN = "mousedown";
-    Dom.Event.ON_MOUSEENTER = "mouseenter";
-    Dom.Event.ON_MOUSELEAVE = "mouseleave";
-    Dom.Event.OM_MOUSEMOVE = "mousemove";
+    Dom.Event.ON_DBLCLICK = 'dblclick';
+    Dom.Event.ON_CONTEXTMENU = 'contextmenu';
+    Dom.Event.ON_MOUSEDOWN = 'mousedown';
+    Dom.Event.ON_MOUSEENTER = 'mouseenter';
+    Dom.Event.ON_MOUSELEAVE = 'mouseleave';
+    Dom.Event.OM_MOUSEMOVE = 'mousemove';
     Dom.Event.ON_MOUSEOVER = 'mouseover';
     Dom.Event.ON_MOUSEOUT = 'mouseout';
-    Dom.Event.ON_MOUSEUP = "mouseup";
+    Dom.Event.ON_MOUSEUP = 'mouseup';
+    Dom.Event.ON_MOUSEMOVE = 'mousemove';
 
     /**
      * Keyboard events
      */
-    Dom.Event.ON_KEYDOWN = "keydown";
-    Dom.Event.ON_KEYUP = "keyup";
-    Dom.Event.ON_KEYPRESS = "keypress";
+    Dom.Event.ON_KEYDOWN = 'keydown';
+    Dom.Event.ON_KEYUP = 'keyup';
+    Dom.Event.ON_KEYPRESS = 'keypress';
 
     /**
      * UI Events
      */
-    Dom.Event.ON_SELECT = "select";
-    Dom.Event.ON_LOAD = "load";
-    Dom.Event.ON_UNLOAD = "unload";
-    Dom.Event.ON_RESIZE = "resize";
-    Dom.Event.ON_UNLOAD = "unload";
-    Dom.Event.ON_ERROR = "error";
-    Dom.Event.ON_SCROLL = "scroll";
-    Dom.Event.ON_RESET = "reset";
-    Dom.Event.ON_SUBMIT = "submit";
+
+    //form events
+    Dom.Event.ON_SELECT = 'select';
+    Dom.Event.ON_RESET = 'reset';
+    Dom.Event.ON_FOCUS = 'focus';
+    Dom.Event.ON_BLUR = 'blur';
+    Dom.Event.ON_SUBMIT = 'submit';
+    Dom.Event.ON_CHANGE = 'change';
+
+    //frame/window events
+    Dom.Event.ON_LOAD = 'load';
+    Dom.Event.ON_UNLOAD = 'unload';
+    Dom.Event.ON_RESIZE = 'resize';
+    Dom.Event.ON_UNLOAD = 'unload';
+    Dom.Event.ON_ERROR = 'error';
+    Dom.Event.ON_SCROLL = 'scroll';
 
     /**
      * Drag and drop events
      */
-    Dom.Event.ON_DRAG = "drag";
-    Dom.Event.ON_DRAGSTART = "dragstart";
-    Dom.Event.ON_DRAGEND = "dragend";
-    Dom.Event.ON_DRAGENTER = "dragenter";
-    Dom.Event.ON_DRAGLEAVE = "dragleave";
-    Dom.Event.ON_DRAGOVER = "dragover";
-    Dom.Event.ON_DROP = "drop";
+    Dom.Event.ON_DRAG = 'drag';
+    Dom.Event.ON_DRAGSTART = 'dragstart';
+    Dom.Event.ON_DRAGEND = 'dragend';
+    Dom.Event.ON_DRAGENTER = 'dragenter';
+    Dom.Event.ON_DRAGLEAVE = 'dragleave';
+    Dom.Event.ON_DRAGOVER = 'dragover';
+    Dom.Event.ON_DROP = 'drop';
 
     /**
-     * Attaches javascript listener to the element
+     * Attaches javascript listener to the element(s) for the given event type
      *
      * @param {HTMLElement|NodeList} element
      * @param {String} event
@@ -229,7 +237,9 @@
     };
 
     /**
-     * Dispatches an event of given type
+     * Execute all handlers and behaviors attached to the element(s)
+     * for the given event type
+     *
      * @param {HTMLElement|NodeList} element
      * @param {string} type
      * @param {Object} options event options
@@ -338,6 +348,21 @@
         return element;
     };
 
+    /**
+     * Determine whether a supplied listener is attached to the element
+     *
+     * @param {HTMLElement} element
+     * @param {String} event
+     * @param {Function} listener
+     * @returns {boolean}
+     */
+    Dom.hasListener = function (element, event, listener) {
+        if (!element._event || !element._event[event]) {
+            return false;
+        }
+        return _indexOf(element._event[event].keys, listener) !== -1;
+    };
+
     /* Dom Event Aliases */
 
     /**
@@ -360,7 +385,7 @@
      * @param listener
      * @returns {HTMLElement|false}
      */
-    Dom.onDblclick = function(element, listener) {
+    Dom.onDblClick = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_DBLCLICK, listener);
     };
 
@@ -437,6 +462,19 @@
     };
 
     /**
+     * Bind an event handler to the “mousemove” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onMouseMove = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_MOUSEMOVE, listener);
+    };
+
+
+    /**
      * Bind an event handler to the “ondrag” JavaScript event
      *
      * @see Dom.addListener
@@ -473,18 +511,123 @@
     };
 
     /**
-     * Determine whether a supplied listener is attached to the element
+     * Bind an event handler to the “focus” JavaScript event
      *
-     * @param {HTMLElement} element
-     * @param {String} event
-     * @param {Function} listener
-     * @returns {boolean}
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
      */
-    Dom.hasListener = function (element, event, listener) {
-        if (!element._event || !element._event[event]) {
-            return false;
-        }
-        return _indexOf(element._event[event].keys, listener) !== -1;
+    Dom.onFocus = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_FOCUS, listener);
+    };
+
+    /**
+     * Bind an event handler to the “blur” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onBlur = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_BLUR, listener);
+    };
+
+    /**
+     * Bind an event handler to the “select” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onSelect = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_SELECT, listener);
+    };
+
+    /**
+     * Bind an event handler to the “change” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onChange = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_CHANGE, listener);
+    };
+
+    /**
+     * Bind an event handler to the “submit” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onSubmit = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_SUBMIT, listener);
+    };
+
+    /**
+     * Bind an event handler to the “reset” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onReset = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_RESET, listener);
+    };
+
+    /**
+     * Bind an event handler to the “load” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onLoad = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_LOAD, listener);
+    };
+
+    /**
+     * Bind an event handler to the “scroll” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onScroll = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_SCROLL, listener);
+    };
+
+    /**
+     * Bind an event handler to the “unload” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onUnload = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_UNLOAD, listener);
+    };
+
+    /**
+     * Bind an event handler to the “resize” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onResize = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_RESIZE, listener);
     };
 
     /* Dom Manipulation */
