@@ -798,6 +798,69 @@
     /* Dom Manipulation */
 
     /**
+     * Gets or sets element attributes
+     * if the attribute is not defined this method
+     * return an empty string
+     *
+     * @param element
+     * @param attribute
+     * @param {*} attribute attribute name or names
+     *
+     * @example
+     * Dom.attribute(el, "href"); // returns href attribute's value of the element
+     * Dom.attribute(el, ["href", "target"]); //returns object of attributed of the element
+     * Dom.attribute(el, {href: "#new"}); //sets href attribute's value
+     */
+    Dom.attribute = function(element, attribute)  {
+
+        //get one attribute
+        if (typeof attribute === "string") {
+
+            var result;
+
+            if (attribute === 'class' && element['className'] !== undefined) {//class?
+                result = element.className;
+            } else if (attribute === 'for' && element['htmlFor'] !== undefined) {//for?
+                result = element.htmlFor;
+            } else if (attribute === 'value' && element['value'] !== undefined) {//value?
+                result = element.value;
+            } else {
+                result = element.getAttribute(attribute);
+            }
+
+            if (result === '') {
+                result = null;
+            }
+            return result;
+        }
+
+        //get many
+        if (_isArray(attribute)) {
+            var result = {};
+            for (var i in attribute) {
+                result[attribute[i]] = Dom.attribute(element, attribute[i]);
+            }
+            return result;
+        }
+
+        //set attribute(s)
+        if (_isObject(attribute)) {
+            for (var i in attribute) {
+
+
+                if (attribute[i] === null) {
+                    element.removeAttribute(i);
+                } else {
+                    element.setAttribute(i, attribute[i]);
+                }
+            }
+            return attribute;
+        }
+
+        return false;
+    };
+
+    /**
      * Sets or gets HTMLElement's style
      *
      * @param {HTMLElement} element
@@ -829,6 +892,124 @@
         }
 
         return false;
+    };
+
+    /**
+     * Gets css classes of the given element
+     *
+     * @param {HTMLElement} element
+     * @returns {Array}
+     */
+    Dom.getClass = function(element) {
+        if (element === undefined) {
+            return false;
+        }
+        var attribute = Dom.attribute(element, 'class');
+        if (!attribute) {
+            return [];
+        }
+        attribute = attribute.split(' ');
+        var classNames = [];
+        for (var i in attribute) {
+            if (attribute[i] === '') {
+                continue;
+            }
+            classNames.push(attribute[i]);
+        }
+        return classNames;
+    };
+
+    /**
+     * Checks whether html element is assigned to the given class(es)
+     *
+     * @param element
+     * @param {String|Array} className
+     * @returns {boolean}
+     */
+    Dom.hasClass = function(element, className) {
+        if (element === undefined) {
+            return false;
+        }
+
+        if (_isString(className)) {
+            return _indexOf(Dom.getClass(element), className) > -1 ? true : false;
+        } else if (_isArray(className)) {
+            var elementClasses = Dom.getClass(element);
+            for (var i in className) {
+                if (_indexOf(className[i], elementClasses) === -1) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
+
+        return false;
+    };
+
+    /**
+     * Assign new css class(es) to the html element(s)
+     *
+     * @param {HTMLElement} element
+     * @param {String} className
+     * @returns {boolean}
+     */
+    Dom.addClass = function(element, className) {
+        if (element === undefined) {
+            return false;
+        }
+
+        if (_isIterable(element)) {
+            for (var i = 0, n = element.length; i < n; i++) {
+                Dom.addClass(element[i], className);
+            }
+            return;
+        }
+
+        if (_isArray(className)) {
+            for (var i in className) {
+                Dom.addClass(element, className[i]);
+            }
+            return;
+        }
+
+        var classes = Dom.getClass(element);
+
+        if (_indexOf(classes, className) === -1) {
+            classes.push(className);
+        }
+        classes = classes.join(' ');
+        Dom.attribute(element, {class: classes});
+    };
+
+    /**
+     * Removes html element's assignment to the css class(es)
+     *
+     * @param {HTMLElement} element
+     * @param {String} className
+     */
+    Dom.removeClass = function(element, className) {
+        if (element === undefined) {
+            return;
+        }
+
+        if (_isIterable(element)) {
+            for (var i = 0, n = element.length; i < n; i++) {
+                Dom.removeClass(element[i], className);
+            }
+            return;
+        }
+
+        var classes = Dom.getClass(element);
+        var i = _indexOf(classes, className);
+
+        if (i === -1) {
+            return;
+        }
+        classes.splice(i, 1);
+        Dom.attribute(element, {class: classes.join(' ')});
+
     };
 
     /**
@@ -973,188 +1154,6 @@
     Dom.remove = function(element) {
         var parent = element.parentNode;
         return parent.removeChild(element);
-    };
-
-    /**
-     * Gets or sets element attributes
-     * if the attribute is not defined this method
-     * return an empty string
-     *
-     * @param element
-     * @param name
-     * @param {*} attribute attribute name or names
-     *
-     * @example
-     * Dom.attribute(el, "href"); // returns href attribute's value of the element
-     * Dom.attribute(el, ["href", "target"]); //returns object of attributed of the element
-     * Dom.attribute(el, {href: "#new"}); //sets href attribute's value
-     */
-    Dom.attribute = function(element, attribute)  {
-
-        //get one attribute
-        if (typeof attribute === "string") {
-
-            var result;
-
-            if (attribute === 'class' && element['className'] !== undefined) {//class?
-                result = element.className;
-            } else if (attribute === 'for' && element['htmlFor'] !== undefined) {//for?
-                result = element.htmlFor;
-            } else if (attribute === 'value' && element['value'] !== undefined) {//value?
-                result = element.value;
-            } else {
-                result = element.getAttribute(attribute);
-            }
-
-            if (result === '') {
-                result = null;
-            }
-            return result;
-        }
-
-        //get many
-        if (_isArray(attribute)) {
-            var result = {};
-            for (var i in attribute) {
-                result[attribute[i]] = Dom.attribute(element, attribute[i]);
-            }
-            return result;
-        }
-
-        //set attribute(s)
-        if (_isObject(attribute)) {
-            for (var i in attribute) {
-
-
-                if (attribute[i] === null) {
-                    element.removeAttribute(i);
-                } else {
-                    element.setAttribute(i, attribute[i]);
-                }
-            }
-            return attribute;
-        }
-
-        return false;
-    };
-
-    /**
-     * Gets css classes of the given element
-     *
-     * @param {HTMLElement} element
-     * @returns {Array}
-     */
-    Dom.getClass = function(element) {
-        if (element === undefined) {
-            return false;
-        }
-        var attribute = Dom.attribute(element, 'class');
-        if (!attribute) {
-            return [];
-        }
-        attribute = attribute.split(' ');
-        var classNames = [];
-        for (var i in attribute) {
-            if (attribute[i] === '') {
-                continue;
-            }
-            classNames.push(attribute[i]);
-        }
-        return classNames;
-    };
-
-    /**
-     * Checks whether html element is assigned to the given class(es)
-     *
-     * @param element
-     * @param {String|Array} className
-     * @returns {boolean}
-     */
-    Dom.hasClass = function(element, className) {
-        if (element === undefined) {
-            return false;
-        }
-
-        if (_isString(className)) {
-            return _indexOf(Dom.getClass(element), className) > -1 ? true : false;
-        } else if (_isArray(className)) {
-            var elementClasses = Dom.getClass(element);
-            for (var i in className) {
-                if (_indexOf(className[i], elementClasses) === -1) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false;
-        }
-
-        return false;
-    };
-
-    /**
-     * Assignes css class(es) to the html element(s)
-     *
-     * @param {HTMLElement} element
-     * @param {String} className
-     * @returns {boolean}
-     */
-    Dom.addClass = function(element, className) {
-        if (element === undefined) {
-            return false;
-        }
-
-        if (_isIterable(element)) {
-            for (var i = 0, n = element.length; i < n; i++) {
-                Dom.addClass(element[i], className);
-            }
-            return;
-        }
-
-        if (_isArray(className)) {
-            for (var i in className) {
-                Dom.addClass(element, className[i]);
-            }
-            return;
-        }
-
-        var classes = Dom.getClass(element);
-
-        if (_indexOf(classes, className) === -1) {
-            classes.push(className);
-        }
-        classes = classes.join(' ');
-        Dom.attribute(element, {class: classes});
-    };
-
-    /**
-     * Remove css class(es) from the html element(s)
-     *
-     * @param element
-     * @param className
-     * @returns {boolean}
-     */
-    Dom.removeClass = function(element, className) {
-        if (element === undefined) {
-            return;
-        }
-
-        if (_isIterable(element)) {
-            for (var i = 0, n = element.length; i < n; i++) {
-                Dom.removeClass(element[i], className);
-            }
-            return;
-        }
-
-        var classes = Dom.getClass(element);
-        var i = _indexOf(classes, className);
-
-        if (i === -1) {
-            return;
-        }
-        classes.splice(i, 1);
-        return Dom.attribute(element, {class: classes.join(' ')});
-
     };
 
     //export dom

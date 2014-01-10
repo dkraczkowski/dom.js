@@ -17,16 +17,32 @@ API Reference
     - [Dom.findByClass](#domfindbyclassclassname)
     - [Dom.parent](#domparentelement)
     - [Dom.children](#domchildrenelement-tag)
-    - [Dom.next]()
-    - [Dom.previous]()
+    - [Dom.next](#domnextelement)
+    - [Dom.previous](#dompreviouselement)
 
  - DOM manipulation
+    - [Dom.attribute]()
+    - [Dom.css]()
+    - [Dom.getClass]()
+    - [Dom.addClass]()
+    - [Dom.hasClass]()
+    - [Dom.removeClass]()
+    - [Dom.create]()
+    - [Dom.html]()
+    - [Dom.text]()
+    - [Dom.append]()
+    - [Dom.prepend]()
+    - [Dom.after]()
+    - [Dom.before]()
+    - [Dom.replace]()
+    - [Dom.remove]()
 
  - Event handling
     - [Dom.addListener](#domaddlistener-element-event-listener)
     - [Dom.removeListener](#domremovelistener-element-event-listener)
     - [Dom.hasListener](#domhaslistener-element-event-listener)
     - [Dom.dispatch](#domdispatch-element-event-options)
+
  - [Dom Events](#dom-events)
     - [Mouse Events](#mouse-events)
         - `click`
@@ -59,30 +75,8 @@ Finds HTMLElements that match css pattern.
 #### Parameters
  - `selector` css seletor eg.(`ul > li`)
 
-#### Example
+#### [Example](examples/dom.find.html)
 
-```html
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8">
-  <title>Dom.find</title>
-  <script src="../src/dom.js"></script>
-</head>
-<body>
-    <div id="test">click me</div>
-    <ul>
-        <li class="li1"><a href="#1">click me</a></li>
-        <li class="li2"><a href="#2">click me</a></li>
-        <li class="li3"><a href="#3">click me</a></li>
-    </ul>
-
-    <script type="text/javascript">
-        console.log(Dom.find('ul > li'));//returns [<li class="c1">...<li>,<li class="c2">...<li>,<li class="c3">...<li>]
-    </script>
-</body>
-</html>
-```
 
 ### Dom.id(`id`)
 
@@ -313,6 +307,217 @@ Gets previous sibling element of the HTMLElement
 </html>
 ```
 
+### Dom.attribute(`element`, `attribute`)
+
+Gets or sets element's attribute(s) if the attribute(s) is not defined this method returns an empty string
+
+#### Parameters
+ - `element` html element
+ - `attribute` attribute name, array of attribute names or object
+
+#### Example
+
+```html
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.attribute</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+    console.log(Dom.attribute(Dom.findByTagName('div')[0], 'id'));//returns test
+    console.log(Dom.attribute(Dom.findByTagName('div')[0], {lang: "en"}));//sets lang attribute to "en"
+    console.log(Dom.attribute(Dom.findByTagName('div')[0], ['id', 'lang']));//will return object {id: test, lang: en}
+</script>
+</body>
+</html>
+```
+
+### Dom.css(`element`, `style`)
+
+Sets or gets HTMLElement's style
+
+#### Parameters
+ - `element` html element
+ - `style` css property name, array of css properties or object
+
+#### Example
+
+```html
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.css</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test" style="margin: 10px;">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+    console.log(Dom.css(Dom.findByTagName('div')[0], 'margin'));//returns 10px
+    Dom.css(Dom.findByTagName('div')[0], {'margin': '20px'});
+    console.log(Dom.css(Dom.findByTagName('div')[0], ['margin-left', 'margin-top']));//return object {margin-left: 20px, margin-top: 20px}
+
+</script>
+</body>
+</html>
+```
+
+### Dom.getClass(`element`)
+
+Gets css classes of the given element
+
+#### Parameters
+ - `element` html element
+
+#### Example
+
+```html
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.getClass</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test" style="margin: 10px;">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3 item3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+
+    console.log(Dom.getClass(Dom.findByTagName('li')[2]));//returns ["li3", "item3"]
+
+</script>
+</body>
+</html>
+```
+
+### Dom.addClass(`element`, `className`)
+
+Assignes css class(es) to the html element(s)
+
+#### Parameters
+ - `element` html element or array of elements
+ - `className` class(es) that will be assigned to the element
+
+#### Example
+
+```html
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.addClass</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test" style="margin: 10px;">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3 item3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+
+    console.log(Dom.addClass(Dom.findByTagName('li'), "new-class"));//assign new-class to all li elements
+    console.log(Dom.addClass(Dom.findByTagName('li')[1], ["new-class-2", "new-class-3"]));//assignes 2 new classes
+    console.log(Dom.getClass(Dom.findByTagName('li')[0]));//return ["li1", "new-class"]
+
+</script>
+</body>
+</html>
+```
+
+### Dom.hasClass(`element`, `className`)
+
+Checks whether html element is assigned to the given class(es)
+
+#### Parameters
+ - `element` html element or array of elements
+ - `className` class that function will check against
+
+#### Example
+
+```html
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.hasClass</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test" style="margin: 10px;">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3 item3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+
+    console.log(Dom.hasClass(Dom.findByTagName('li')[0], "li1"));//returns true
+
+</script>
+</body>
+</html>
+```
+
+### Dom.removeClass(`element`, `className`)
+
+Removes html element's assignment to the css class(es)
+
+#### Parameters
+ - `element` html element or array of elements
+ - `className` class(es) that will be removed from the element's class attribute
+
+#### Example
+
+```html
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.hasClass</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test" style="margin: 10px;">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3 item3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+
+    console.log(Dom.removeClass(Dom.findByTagName('li')[0], "li1"));
+
+</script>
+</body>
+</html>
+```
 
 ### Dom.addListener (`element`, `event`, `listener`)
 
