@@ -1,0 +1,23 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.css</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test" style="margin: 10px;">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+    console.log(Dom.css(Dom.findByTagName('div')[0], 'margin'));//returns 10px
+    Dom.css(Dom.findByTagName('div')[0], {'margin': '20px'});
+    console.log(Dom.css(Dom.findByTagName('div')[0], ['margin-left', 'margin-top']));//return object {margin-left: 20px, margin-top: 20px}
+
+</script>
+</body>
+</html>

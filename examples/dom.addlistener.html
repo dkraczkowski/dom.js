@@ -1,0 +1,29 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.addListener</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test">click me</div>
+<ul>
+    <li><a href="#1">click me</a></li>
+    <li><a href="#2">click me</a></li>
+    <li><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+    //Attaching event listener to one element
+    Dom.addListener(Dom.id('test'), 'click', function(event) {
+        alert('element #test was clicked');
+    });
+
+    //Attaching event listener to many elements
+    Dom.addListener(Dom.findByTagName('a'), 'click', function(event) {
+        event.preventDefault();
+        alert('element ' + this + ' was clicked');
+    });
+</script>
+</body>
+</html>

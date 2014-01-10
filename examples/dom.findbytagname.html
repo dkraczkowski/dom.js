@@ -1,0 +1,20 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.findByTagName</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+    console.log(Dom.findByTagName('title'));//returns [<title>Dom.findByTagName</title>]
+</script>
+</body>
+</html>
