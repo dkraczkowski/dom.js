@@ -201,7 +201,7 @@ Gets the parent of the html element
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Dom.findByClass</title>
+    <title>Dom.parent</title>
     <script src="../src/dom.js"></script>
 </head>
 <body>
@@ -235,7 +235,7 @@ Gets children elements of the html element
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Dom.findByClass</title>
+    <title>Dom.children</title>
     <script src="../src/dom.js"></script>
 </head>
 <body>
