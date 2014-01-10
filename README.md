@@ -42,11 +42,29 @@ A pointing device button is released over an element.
 #####`mouseenter` Dom.onMouseEnter(`element`, `listener`)
 A pointing device is moved onto the element that has the listener attached.
 
-#####`mouseleave` Dom.onMouseLeave`element`, `listener`)
+#####`mouseleave` Dom.onMouseLeave(`element`, `listener`)
 A pointing device is moved off the element that has the listener attached.
 
-#####`mousemove` Dom.onMouseMove`element`, `listener`)
+#####`mousemove` Dom.onMouseMove(`element`, `listener`)
 A pointing device is moved over an element.
+
+#####`drag` Dom.onDrag(`element`, `listener`)
+An element or text selection is being dragged (every 350ms).
+
+#####`dragstart` Dom.onDragStart(`element`, `listener`)
+The user starts dragging an element or text selection.
+
+#####`dragend` Dom.onDragEnd(`element`, `listener`)
+A drag operation is being ended (by releasing a mouse button or hitting the escape key).
+
+#####`focus` Dom.onFocus(`element`, `listener`)
+An element has received focus (does not bubble).
+
+#####`blur` Dom.onBlur(`element`, `listener`)
+An element has lost focus (does not bubble).
+
+
+
 
 
 #### Example
