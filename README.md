@@ -8,6 +8,37 @@ Only 8KB!
 API Reference
 =============
 
+###Table of contents
+
+ - [Dom.addListener](#domaddlistener-element-event-listener)
+ - [Dom.removeListener](#domremovelistener-element-event-listener)
+ - [Dom.hasListener](#domhaslistener-element-event-listener)
+ - [Dom.dispatch](#domdispatch-element-event-options)
+ - [Dom Events](#dom-events)
+    - [Mouse Events](#mouse-events)
+        - `click`
+        - `dblclick`
+        - `mouseover`
+        - `mouseout`
+        - `mousedown`
+        - `mouseup`
+        - `mouseenter`
+        - `mouseleave`
+        - `mousemove`
+    - [Form Events](#form-events)
+        - `focus`
+        - `blur`
+        - `select`
+        - `change`
+        - `submit`
+        - `reset`
+    - [Keyboard Events](#keyboard-events)
+        - `keydown`
+        - `keyup`
+        - `keypress`
+ -
+
+
 ### Dom.addListener (`element`, `event`, `listener`)
 
 Attaches javascript listener to the element(s) for the given event type.
@@ -19,7 +50,7 @@ Attaches javascript listener to the element(s) for the given event type.
  - `listener` a javascript function wich will be called when given event occurs
 
 Dom.js also offers aliases for `Dom.addListener` function.
-You can check list of aliases, explanation and event names below.
+You can check list of aliases, explanation and event names [here](#dom-events).
 
 #### Example
 
