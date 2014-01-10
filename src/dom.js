@@ -774,7 +774,11 @@
      * @returns {HTMLElement}
      */
     Dom.next = function(element) {
-        return element.nextSibling;
+        var result = element.nextSibling;
+        if (result.nodeType != 1) {
+            return Dom.next(result);
+        }
+        return result;
     };
 
     /**
@@ -784,7 +788,11 @@
      * @returns {HTMLElement}
      */
     Dom.previous = function(element) {
-        return element.previousSibling;
+        var result = element.previousSibling;
+        if (result.nodeType != 1) {
+            return Dom.previous(result);
+        }
+        return result;
     };
 
     /* Dom Manipulation */

@@ -12,11 +12,11 @@ API Reference
 
  - DOM traversal
     - [Dom.find](#domfindselector)
-    - [Dom.id]()
-    - [Dom.findByTagName]()
-    - [Dom.findByClass]()
-    - [Dom.parent]()
-    - [Dom.children]()
+    - [Dom.id](#domidid)
+    - [Dom.findByTagName](#domfindbytagnametagname)
+    - [Dom.findByClass](#domfindbyclassclassname)
+    - [Dom.parent](#domparentelement)
+    - [Dom.children](#domchildrenelement-tag)
     - [Dom.next]()
     - [Dom.previous]()
 
@@ -61,7 +61,6 @@ Finds HTMLElements that match css pattern.
 
 #### Example
 
----
 ```html
 <!doctype html>
 <html>
@@ -94,7 +93,6 @@ Returns HTMLElement with given id
 
 #### Example
 
----
 ```html
 <!doctype html>
 <html>
@@ -127,7 +125,6 @@ Finds HTMLElements that match given tag name
 
 #### Example
 
----
 ```html
 <!doctype html>
 <html>
@@ -162,7 +159,6 @@ Finds HTMLElements that match given class name
 
 #### Example
 
----
 ```html
 <!doctype html>
 <html>
@@ -195,7 +191,6 @@ Gets the parent of the html element
 
 #### Example
 
----
 ```html
 <!doctype html>
 <html>
@@ -229,7 +224,6 @@ Gets children elements of the html element
 
 #### Example
 
----
 ```html
 <!doctype html>
 <html>
@@ -255,6 +249,70 @@ Gets children elements of the html element
 </html>
 ```
 
+### Dom.next(`element`)
+
+Gets following sibling element of the HTMLElement
+
+#### Parameters
+ - `element` html element
+
+#### Example
+
+```html
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.next</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+    console.log(Dom.next(Dom.findByTagName('li')[0]));//returns <li class="li2">...</li>
+</script>
+</body>
+</html>
+```
+
+### Dom.previous(`element`)
+
+Gets previous sibling element of the HTMLElement
+
+#### Parameters
+ - `element` html element
+
+#### Example
+
+```html
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.next</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+    console.log(Dom.previous(Dom.findByTagName('li')[1]));//returns <li class="li1">...</li>
+</script>
+</body>
+</html>
+```
+
 
 ### Dom.addListener (`element`, `event`, `listener`)
 
@@ -271,7 +329,6 @@ You can check list of aliases, explanation and event names [here](#dom-events).
 
 #### Example
 
----
 ```html
 <!doctype html>
 <html>
