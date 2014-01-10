@@ -10,10 +10,15 @@ API Reference
 
 ###Table of contents
 
- - [Dom.addListener](#domaddlistener-element-event-listener)
- - [Dom.removeListener](#domremovelistener-element-event-listener)
- - [Dom.hasListener](#domhaslistener-element-event-listener)
- - [Dom.dispatch](#domdispatch-element-event-options)
+ - DOM traversal
+    - Dom.find
+ - DOM manipulation
+
+ - Event handling
+    - [Dom.addListener](#domaddlistener-element-event-listener)
+    - [Dom.removeListener](#domremovelistener-element-event-listener)
+    - [Dom.hasListener](#domhaslistener-element-event-listener)
+    - [Dom.dispatch](#domdispatch-element-event-options)
  - [Dom Events](#dom-events)
     - [Mouse Events](#mouse-events)
         - `click`
@@ -37,6 +42,39 @@ API Reference
         - `keyup`
         - `keypress`
 
+### Dom.find(`selector`)
+
+Finds HTMLElements that match css pattern.
+*Supported from IE 8.0, FF 3.5, Chrome 4.0, Safari 3.1*
+
+#### Parameters
+ - `selector` css seletor eg.(`ul > li`)
+
+#### Example
+
+---
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Dom.find</title>
+  <script src="../src/dom.js"></script>
+</head>
+<body>
+    <div id="test">click me</div>
+    <ul>
+        <li class="li1"><a href="#1">click me</a></li>
+        <li class="li2"><a href="#2">click me</a></li>
+        <li class="li3"><a href="#3">click me</a></li>
+    </ul>
+
+    <script type="text/javascript">
+        console.log(Dom.find('ul > li'));//returns [<li class="c1">...<li>,<li class="c2">...<li>,<li class="c3">...<li>]
+    </script>
+</body>
+</html>
+```
 
 ### Dom.addListener (`element`, `event`, `listener`)
 
