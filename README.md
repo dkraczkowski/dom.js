@@ -3,7 +3,7 @@ DOM.js
 
 DOM.js is a lightweight, fast cross browser library for DOM traversal, manipulation and event handling.
 
-Only 8KB!
+Only 10KB!
 
 API Reference
 =============
