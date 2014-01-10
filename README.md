@@ -11,7 +11,15 @@ API Reference
 ###Table of contents
 
  - DOM traversal
-    - Dom.find
+    - [Dom.find](#domfindselector)
+    - [Dom.id]()
+    - [Dom.findByTagName]()
+    - [Dom.findByClass]()
+    - [Dom.parent]()
+    - [Dom.children]()
+    - [Dom.next]()
+    - [Dom.previous]()
+
  - DOM manipulation
 
  - Event handling
@@ -45,6 +53,7 @@ API Reference
 ### Dom.find(`selector`)
 
 Finds HTMLElements that match css pattern.
+
 *Supported from IE 8.0, FF 3.5, Chrome 4.0, Safari 3.1*
 
 #### Parameters
@@ -75,6 +84,177 @@ Finds HTMLElements that match css pattern.
 </body>
 </html>
 ```
+
+### Dom.id(`id`)
+
+Returns HTMLElement with given id
+
+#### Parameters
+ - `id` element's id
+
+#### Example
+
+---
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Dom.id</title>
+  <script src="../src/dom.js"></script>
+</head>
+<body>
+    <div id="test">click me</div>
+    <ul>
+        <li class="li1"><a href="#1">click me</a></li>
+        <li class="li2"><a href="#2">click me</a></li>
+        <li class="li3"><a href="#3">click me</a></li>
+    </ul>
+
+    <script type="text/javascript">
+        console.log(Dom.id('test'));//returns <div id="test">click me</div>
+    </script>
+</body>
+</html>
+```
+
+### Dom.findByTagName(`tagName`)
+
+Finds HTMLElements that match given tag name
+
+#### Parameters
+ - `tagName` tag's name eg.(a, span, div, etc)
+
+#### Example
+
+---
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Dom.findByTagName</title>
+  <script src="../src/dom.js"></script>
+</head>
+<body>
+    <div id="test">click me</div>
+    <ul>
+        <li class="li1"><a href="#1">click me</a></li>
+        <li class="li2"><a href="#2">click me</a></li>
+        <li class="li3"><a href="#3">click me</a></li>
+    </ul>
+
+    <script type="text/javascript">
+        console.log(Dom.findByTagName('title'));//returns [<title>Dom.findByTagName</title>]
+    </script>
+</body>
+</html>
+```
+
+### Dom.findByClass(`className`)
+
+Finds HTMLElements that match given class name
+
+*Supported from IE 8.0, FF 3.5, Chrome 4.0, Safari 3.1*
+
+#### Parameters
+ - `className` css class name
+
+#### Example
+
+---
+```html
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Dom.findByClass</title>
+  <script src="../src/dom.js"></script>
+</head>
+<body>
+    <div id="test">click me</div>
+    <ul>
+        <li class="li1"><a href="#1">click me</a></li>
+        <li class="li2"><a href="#2">click me</a></li>
+        <li class="li3"><a href="#3">click me</a></li>
+    </ul>
+
+    <script type="text/javascript">
+        console.log(Dom.findByClass('li1'));//returns [<li class="li1"><a href="#1">click me</a></li>]
+    </script>
+</body>
+</html>
+```
+
+### Dom.parent(`element`)
+
+Gets the parent of the html element
+
+#### Parameters
+ - `element` html element
+
+#### Example
+
+---
+```html
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.findByClass</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+    console.log(Dom.parent(Dom.id('test')));//returns <body>...</body>
+</script>
+</body>
+</html>
+```
+
+### Dom.children(`element`, `tag`)
+
+Gets children elements of the html element
+
+#### Parameters
+ - `element` html element
+ - `tag` determines whether text nodes should be returned or tells function to filter children by tagname
+
+#### Example
+
+---
+```html
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.findByClass</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test">click me</div>
+<ul>
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+    console.log(Dom.children(Dom.findByTagName('ul')[0]));//returns [<li class="c1">...<li>,<li class="c2">...<li>,<li class="c3">...<li>]
+    console.log(Dom.children(Dom.findByTagName('ul')[0], true));//returns all children with text nodes as well
+    console.log(Dom.children(Dom.findByTagName('body')[0], 'div');
+</script>
+</body>
+</html>
+```
+
 
 ### Dom.addListener (`element`, `event`, `listener`)
 

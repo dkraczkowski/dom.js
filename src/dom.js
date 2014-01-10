@@ -666,7 +666,7 @@
         return Dom.addListener(element, Dom.Event.ON_KEYPRESS, listener);
     };
 
-    /* Dom Manipulation */
+    /* Dom Traversal */
 
     /**
      * Finds HTMLElements that match css pattern
@@ -680,7 +680,7 @@
     };
 
     /**
-     * Finds HTMLElement with given id
+     * Returns HTMLElement with given id
      *
      * @param {String} id
      * @returns {HTMLElement}
@@ -711,13 +711,80 @@
             name = name.substring(1);
         }
 
-        if (document.getElementsByClassName ) {
+        if (document.getElementsByClassName) {
             return document.getElementsByClassName(name);
         }
 
         if(document.querySelector && document.querySelectorAll ) {
             return document.querySelectorAll("." + name);
         }
+    };
+
+    /**
+     * Gets the parent of the html element
+     *
+     * @param {HTMLElement} element
+     * @returns {HTMLElement}
+     */
+    Dom.parent = function(element) {
+        return element.parentNode;
+    };
+
+    /**
+     * Gets children elements of html element. Text nodes are ommited by default.
+     * To get textnodes tag must be set to true, eg.
+     *
+     *      Dom.children(element, true)
+     *
+     * @param {HTMLElement} element
+     * @param {String|boolean} tag filters children by tag name or tells to retrieve text nodes as well
+     * @returns {NodeList|Array}
+     */
+    Dom.children = function(element, tag) {
+
+        if (typeof tag === 'boolean' && tag) {
+            return element.childNodes;
+        }
+
+        var result = [];
+
+        if (_isString(tag)) {
+
+            for (var i = 0, j = element.childNodes.length; i < j; i++) {
+                if (element.childNodes[i].nodeName.toLowerCase() === tag.toLowerCase()) {
+                    result.push(element.childNodes[i]);
+                }
+            }
+            return result;
+        }
+
+        for (var i in element.childNodes) {
+            if (element.childNodes[i].nodeType === 1) {
+                result.push(element.childNodes[i]);
+            }
+        }
+
+        return result;
+    };
+
+    /**
+     * Gets following sibling element of the HTMLElement
+     *
+     * @param {HTMLElement} element
+     * @returns {HTMLElement}
+     */
+    Dom.next = function(element) {
+        return element.nextSibling;
+    };
+
+    /**
+     * Gets previous sibling element of the HTMLElement
+     *
+     * @param {HTMLElement} element
+     * @returns {HTMLElement}
+     */
+    Dom.previous = function(element) {
+        return element.previousSibling;
     };
 
     /* Dom Manipulation */
@@ -810,27 +877,6 @@
     };
 
     /**
-     * Gets the parent of html element
-     *
-     * @param {HTMLElement} element
-     * @returns {HTMLElement}
-     */
-    Dom.parent = function(element) {
-        return element.parentNode;
-    };
-
-    /**
-     * Gets children elements of html element
-     *
-     * @param {HTMLElement} element
-     * @returns {NodeList}
-     */
-    Dom.children = function(element) {
-
-        return element.childNodes;
-    };
-
-    /**
      * Inserts content specified by the html argument at the end of HTMLElement
      * @param {HTMLElement} element
      * @param {String|HTMLElement} html
@@ -893,26 +939,6 @@
 
         element.insertBefore(html, element);
         return html;
-    };
-
-    /**
-     * Gets following sibling element of the HTMLElement
-     *
-     * @param {HTMLElement} element
-     * @returns {HTMLElement}
-     */
-    Dom.next = function(element) {
-        return element.nextSibling;
-    };
-
-    /**
-     * Gets previous sibling element of the HTMLElement
-     *
-     * @param {HTMLElement} element
-     * @returns {HTMLElement}
-     */
-    Dom.previous = function(element) {
-        return element.previousSibling;
     };
 
     /**

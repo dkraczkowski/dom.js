@@ -2,7 +2,7 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Dom.find</title>
+    <title>Dom.findByClass</title>
     <script src="../src/dom.js"></script>
 </head>
 <body>
@@ -14,7 +14,9 @@
 </ul>
 
 <script type="text/javascript">
-    console.log(Dom.find('ul > li'));//returns [<li class="c1">...<li>,<li class="c2">...<li>,<li class="c3">...<li>]
+    console.log(Dom.children(Dom.findByTagName('ul')[0]));//returns [<li class="c1">...<li>,<li class="c2">...<li>,<li class="c3">...<li>]
+    console.log(Dom.children(Dom.findByTagName('ul')[0], true));//returns all children with text nodes as well
+    console.log(Dom.children(Dom.findByTagName('body')[0], 'div'));
 </script>
 </body>
 </html>
