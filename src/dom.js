@@ -1013,13 +1013,22 @@
     };
 
     /**
-     * Creates html element
+     * Creates html element(s)
      *
-     * @param {String} string
+     * @param {String} html
      * @return {HTMLElement}
      */
-    Dom.create = function(string) {
-        return document.createDocumentFragment(string);
+    Dom.create = function(html) {
+        var div = document.createElement('div');
+        var doc = document.createDocumentFragment();
+        Dom.html(div, html);
+        var children = Dom.children(div);
+
+        for (var i = 0, j = children.length; i < j; i++) {
+            Dom.append(doc, children[i]);
+        }
+
+        return doc;
     };
 
     /**

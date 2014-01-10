@@ -204,6 +204,16 @@ Removes html element's assignment to the css class(es)
 
 #### [Example](examples/dom.removeclass.html)
 
+### Dom.create(`html`)
+
+Creates html element
+
+#### Parameters
+ - `html` string containings element's html
+ - `className` class(es) that will be removed from the element's class attribute
+
+#### [Example](examples/dom.removeclass.html)
+
 ### Dom.addListener (`element`, `event`, `listener`)
 
 Attaches javascript listener to the element(s) for the given event type.
