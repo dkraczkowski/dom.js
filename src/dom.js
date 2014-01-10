@@ -314,7 +314,7 @@
     };
 
     /**
-     * Removes previously attached event
+     * Removes javascript listener from the element(s) for the given event type.
      * @param {HTMLElement|NodeList} element
      * @param {String} event
      * @param {Function} listener
@@ -628,6 +628,42 @@
      */
     Dom.onResize = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_RESIZE, listener);
+    };
+
+    /**
+     * Bind an event handler to the “keydown” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param {Function} listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onKeyDown = function (element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_KEYDOWN, listener);
+    };
+
+    /**
+     * Bind an event handler to the “keyup” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param {Function} listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onKeyUp = function (element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_KEYUP, listener);
+    };
+
+    /**
+     * Bind an event handler to the “keypress” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param {Function} listener
+     * @returns {HTMLElement|false}
+     */
+    Dom.onKeyPress = function (element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_KEYPRESS, listener);
     };
 
     /* Dom Manipulation */
