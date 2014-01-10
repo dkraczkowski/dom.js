@@ -18,47 +18,580 @@
         <h1>Dom.js</h1>
         <p>Micro javascript dom library</p>
 
-        <p class="view"><a href="https://github.com/dkraczkowski/js-dom">View the Project on GitHub <small>dkraczkowski/js-dom</small></a></p>
+        <p class="view"><a href="https://github.com/dkraczkowski/dom.js">View the Project on GitHub <small>dkraczkowski/dom.js</small></a></p>
 
 
         <ul>
-          <li><a href="https://github.com/dkraczkowski/js-dom/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/dkraczkowski/js-dom/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/dkraczkowski/js-dom">View On <strong>GitHub</strong></a></li>
+          <li><a href="https://github.com/dkraczkowski/dom.js/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/dkraczkowski/dom.js/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/dkraczkowski/dom.js">View On <strong>GitHub</strong></a></li>
         </ul>
       </header>
       <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+        <h1>
+<a name="domjs" class="anchor" href="#domjs"><span class="octicon octicon-link"></span></a>DOM.js</h1>
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+<p>DOM.js is a lightweight, fast cross browser library for DOM traversal, manipulation and event handling.</p>
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+<p>Only 10KB!</p>
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+<h1>
+<a name="api-reference" class="anchor" href="#api-reference"><span class="octicon octicon-link"></span></a>API Reference</h1>
 
 <h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+<a name="table-of-contents" class="anchor" href="#table-of-contents"><span class="octicon octicon-link"></span></a>Table of contents</h3>
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+<ul>
+<li>
+<p>DOM traversal</p>
+
+<ul>
+<li><a href="#domfindselector">Dom.find</a></li>
+<li><a href="#domidid">Dom.id</a></li>
+<li><a href="#domfindbytagnametagname">Dom.findByTagName</a></li>
+<li><a href="#domfindbyclassclassname">Dom.findByClass</a></li>
+<li><a href="#domparentelement">Dom.parent</a></li>
+<li><a href="#domchildrenelement-tag">Dom.children</a></li>
+<li><a href="#domnextelement">Dom.next</a></li>
+<li><a href="#dompreviouselement">Dom.previous</a></li>
+</ul>
+</li>
+<li>
+<p>DOM manipulation</p>
+
+<ul>
+<li><a href="">Dom.attribute</a></li>
+<li><a href="">Dom.css</a></li>
+<li><a href="">Dom.getClass</a></li>
+<li><a href="">Dom.addClass</a></li>
+<li><a href="">Dom.hasClass</a></li>
+<li><a href="">Dom.removeClass</a></li>
+<li><a href="">Dom.create</a></li>
+<li><a href="">Dom.html</a></li>
+<li><a href="">Dom.text</a></li>
+<li><a href="">Dom.append</a></li>
+<li><a href="">Dom.prepend</a></li>
+<li><a href="">Dom.after</a></li>
+<li><a href="">Dom.before</a></li>
+<li><a href="">Dom.replace</a></li>
+<li><a href="">Dom.remove</a></li>
+</ul>
+</li>
+<li>
+<p>Event handling</p>
+
+<ul>
+<li><a href="#domaddlistener-element-event-listener">Dom.addListener</a></li>
+<li><a href="#domremovelistener-element-event-listener">Dom.removeListener</a></li>
+<li><a href="#domhaslistener-element-event-listener">Dom.hasListener</a></li>
+<li><a href="#domdispatch-element-event-options">Dom.dispatch</a></li>
+</ul>
+</li>
+<li>
+<p><a href="#dom-events">Dom Events</a></p>
+
+<ul>
+<li>
+<a href="#mouse-events">Mouse Events</a>
+
+<ul>
+<li><code>click</code></li>
+<li><code>dblclick</code></li>
+<li><code>mouseover</code></li>
+<li><code>mouseout</code></li>
+<li><code>mousedown</code></li>
+<li><code>mouseup</code></li>
+<li><code>mouseenter</code></li>
+<li><code>mouseleave</code></li>
+<li><code>mousemove</code></li>
+</ul>
+</li>
+<li>
+<a href="#form-events">Form Events</a>
+
+<ul>
+<li><code>focus</code></li>
+<li><code>blur</code></li>
+<li><code>select</code></li>
+<li><code>change</code></li>
+<li><code>submit</code></li>
+<li><code>reset</code></li>
+</ul>
+</li>
+<li>
+<a href="#keyboard-events">Keyboard Events</a>
+
+<ul>
+<li><code>keydown</code></li>
+<li><code>keyup</code></li>
+<li><code>keypress</code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul><h3>
+<a name="domfindselector" class="anchor" href="#domfindselector"><span class="octicon octicon-link"></span></a>Dom.find(<code>selector</code>)</h3>
+
+<p>Finds HTMLElements that match css pattern.</p>
+
+<p><em>Supported from IE 8.0, FF 3.5, Chrome 4.0, Safari 3.1</em></p>
+
+<h4>
+<a name="parameters" class="anchor" href="#parameters"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>selector</code> css seletor eg.(<code>ul &gt; li</code>)</li>
+</ul><h4>
+<a name="example" class="anchor" href="#example"><span class="octicon octicon-link"></span></a><a href="examples/dom.find.html">Example</a>
+</h4>
 
 <h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+<a name="domidid" class="anchor" href="#domidid"><span class="octicon octicon-link"></span></a>Dom.id(<code>id</code>)</h3>
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+<p>Returns HTMLElement with given id</p>
+
+<h4>
+<a name="parameters-1" class="anchor" href="#parameters-1"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>id</code> element's id</li>
+</ul><h4>
+<a name="example-1" class="anchor" href="#example-1"><span class="octicon octicon-link"></span></a><a href="examples/dom.id.html">Example</a>
+</h4>
 
 <h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+<a name="domfindbytagnametagname" class="anchor" href="#domfindbytagnametagname"><span class="octicon octicon-link"></span></a>Dom.findByTagName(<code>tagName</code>)</h3>
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+<p>Finds HTMLElements that match given tag name</p>
+
+<h4>
+<a name="parameters-2" class="anchor" href="#parameters-2"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>tagName</code> tag's name eg.(a, span, div, etc)</li>
+</ul><h4>
+<a name="example-2" class="anchor" href="#example-2"><span class="octicon octicon-link"></span></a><a href="examples/dom.findbytagname.html">Example</a>
+</h4>
 
 <h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+<a name="domfindbyclassclassname" class="anchor" href="#domfindbyclassclassname"><span class="octicon octicon-link"></span></a>Dom.findByClass(<code>className</code>)</h3>
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
+<p>Finds HTMLElements that match given class name</p>
+
+<p><em>Supported from IE 8.0, FF 3.5, Chrome 4.0, Safari 3.1</em></p>
+
+<h4>
+<a name="parameters-3" class="anchor" href="#parameters-3"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>className</code> css class name</li>
+</ul><h4>
+<a name="example-3" class="anchor" href="#example-3"><span class="octicon octicon-link"></span></a><a href="examples/dom.findbyclassname.html">Example</a>
+</h4>
+
+<h3>
+<a name="domparentelement" class="anchor" href="#domparentelement"><span class="octicon octicon-link"></span></a>Dom.parent(<code>element</code>)</h3>
+
+<p>Gets the parent of the html element</p>
+
+<h4>
+<a name="parameters-4" class="anchor" href="#parameters-4"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> html element</li>
+</ul><h4>
+<a name="example-4" class="anchor" href="#example-4"><span class="octicon octicon-link"></span></a><a href="examples/dom.parent.html">Example</a>
+</h4>
+
+<h3>
+<a name="domchildrenelement-tag" class="anchor" href="#domchildrenelement-tag"><span class="octicon octicon-link"></span></a>Dom.children(<code>element</code>, <code>tag</code>)</h3>
+
+<p>Gets children elements of the html element</p>
+
+<h4>
+<a name="parameters-5" class="anchor" href="#parameters-5"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> html element</li>
+<li>
+<code>tag</code> determines whether text nodes should be returned or tells function to filter children by tagname</li>
+</ul><h4>
+<a name="example-5" class="anchor" href="#example-5"><span class="octicon octicon-link"></span></a><a href="examples/dom.children.html">Example</a>
+</h4>
+
+<h3>
+<a name="domnextelement" class="anchor" href="#domnextelement"><span class="octicon octicon-link"></span></a>Dom.next(<code>element</code>)</h3>
+
+<p>Gets following sibling element of the HTMLElement</p>
+
+<h4>
+<a name="parameters-6" class="anchor" href="#parameters-6"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> html element</li>
+</ul><h4>
+<a name="example-6" class="anchor" href="#example-6"><span class="octicon octicon-link"></span></a><a href="examples/dom.next.html">Example</a>
+</h4>
+
+<h3>
+<a name="dompreviouselement" class="anchor" href="#dompreviouselement"><span class="octicon octicon-link"></span></a>Dom.previous(<code>element</code>)</h3>
+
+<p>Gets previous sibling element of the HTMLElement</p>
+
+<h4>
+<a name="parameters-7" class="anchor" href="#parameters-7"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> html element</li>
+</ul><h4>
+<a name="example-7" class="anchor" href="#example-7"><span class="octicon octicon-link"></span></a><a href="examples/dom.previous.html">Example</a>
+</h4>
+
+<h3>
+<a name="domattributeelement-attribute" class="anchor" href="#domattributeelement-attribute"><span class="octicon octicon-link"></span></a>Dom.attribute(<code>element</code>, <code>attribute</code>)</h3>
+
+<p>Gets or sets element's attribute(s) if the attribute(s) is not defined this method returns an empty string</p>
+
+<h4>
+<a name="parameters-8" class="anchor" href="#parameters-8"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> html element</li>
+<li>
+<code>attribute</code> attribute name, array of attribute names or object</li>
+</ul><h4>
+<a name="example-8" class="anchor" href="#example-8"><span class="octicon octicon-link"></span></a><a href="examples/dom.attribute.html">Example</a>
+</h4>
+
+<h3>
+<a name="domcsselement-style" class="anchor" href="#domcsselement-style"><span class="octicon octicon-link"></span></a>Dom.css(<code>element</code>, <code>style</code>)</h3>
+
+<p>Sets or gets HTMLElement's style</p>
+
+<h4>
+<a name="parameters-9" class="anchor" href="#parameters-9"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> html element</li>
+<li>
+<code>style</code> css property name, array of css properties or object</li>
+</ul><h4>
+<a name="example-9" class="anchor" href="#example-9"><span class="octicon octicon-link"></span></a><a href="examples/dom.css.html">Example</a>
+</h4>
+
+<h3>
+<a name="domgetclasselement" class="anchor" href="#domgetclasselement"><span class="octicon octicon-link"></span></a>Dom.getClass(<code>element</code>)</h3>
+
+<p>Gets css classes of the given element</p>
+
+<h4>
+<a name="parameters-10" class="anchor" href="#parameters-10"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> html element</li>
+</ul><h4>
+<a name="example-10" class="anchor" href="#example-10"><span class="octicon octicon-link"></span></a><a href="examples/dom.getclass.html">Example</a>
+</h4>
+
+<h3>
+<a name="domaddclasselement-classname" class="anchor" href="#domaddclasselement-classname"><span class="octicon octicon-link"></span></a>Dom.addClass(<code>element</code>, <code>className</code>)</h3>
+
+<p>Assignes css class(es) to the html element(s)</p>
+
+<h4>
+<a name="parameters-11" class="anchor" href="#parameters-11"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> html element or array of elements</li>
+<li>
+<code>className</code> class(es) that will be assigned to the element</li>
+</ul><h4>
+<a name="example-11" class="anchor" href="#example-11"><span class="octicon octicon-link"></span></a><a href="examples/dom.addclass.html">Example</a>
+</h4>
+
+<h3>
+<a name="domhasclasselement-classname" class="anchor" href="#domhasclasselement-classname"><span class="octicon octicon-link"></span></a>Dom.hasClass(<code>element</code>, <code>className</code>)</h3>
+
+<p>Checks whether html element is assigned to the given class(es)</p>
+
+<h4>
+<a name="parameters-12" class="anchor" href="#parameters-12"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> html element or array of elements</li>
+<li>
+<code>className</code> class that function will check against</li>
+</ul><h4>
+<a name="example-12" class="anchor" href="#example-12"><span class="octicon octicon-link"></span></a><a href="examples/dom.hasclass.html">Example</a>
+</h4>
+
+<h3>
+<a name="domremoveclasselement-classname" class="anchor" href="#domremoveclasselement-classname"><span class="octicon octicon-link"></span></a>Dom.removeClass(<code>element</code>, <code>className</code>)</h3>
+
+<p>Removes html element's assignment to the css class(es)</p>
+
+<h4>
+<a name="parameters-13" class="anchor" href="#parameters-13"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> html element or array of elements</li>
+<li>
+<code>className</code> class(es) that will be removed from the element's class attribute</li>
+</ul><h4>
+<a name="example-13" class="anchor" href="#example-13"><span class="octicon octicon-link"></span></a><a href="examples/dom.removeclass.html">Example</a>
+</h4>
+
+<h3>
+<a name="domcreatehtml" class="anchor" href="#domcreatehtml"><span class="octicon octicon-link"></span></a>Dom.create(<code>html</code>)</h3>
+
+<p>Creates and returns html element created from provided content</p>
+
+<h4>
+<a name="parameters-14" class="anchor" href="#parameters-14"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<p><code>html</code> html string</p>
+
+<h4>
+<a name="example-14" class="anchor" href="#example-14"><span class="octicon octicon-link"></span></a><a href="examples/dom.create.html">Example</a>
+</h4>
+</li>
+</ul><h4>
+<a name="parameters-15" class="anchor" href="#parameters-15"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>html</code> string containings element's html</li>
+<li>
+<code>className</code> class(es) that will be removed from the element's class attribute</li>
+</ul><h4>
+<a name="example-15" class="anchor" href="#example-15"><span class="octicon octicon-link"></span></a><a href="examples/dom.removeclass.html">Example</a>
+</h4>
+
+<h3>
+<a name="domaddlistener-element-event-listener" class="anchor" href="#domaddlistener-element-event-listener"><span class="octicon octicon-link"></span></a>Dom.addListener (<code>element</code>, <code>event</code>, <code>listener</code>)</h3>
+
+<p>Attaches javascript listener to the element(s) for the given event type.</p>
+
+<h4>
+<a name="parameters-16" class="anchor" href="#parameters-16"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> a DOMElement, NodeList or just an array with DOMElements</li>
+<li>
+<code>event</code> a dom event name, eg. (<code>click</code>, <code>dblclick</code>, etc.)</li>
+<li>
+<code>listener</code> a javascript function wich will be called when given event occurs</li>
+</ul><p>Dom.js also offers aliases for <code>Dom.addListener</code> function.
+You can check list of aliases, explanation and event names <a href="#dom-events">here</a>.</p>
+
+<h4>
+<a name="example-16" class="anchor" href="#example-16"><span class="octicon octicon-link"></span></a><a href="examples/dom.addlistener.html">Example</a>
+</h4>
+
+<h3>
+<a name="domremovelistener-element-event-listener" class="anchor" href="#domremovelistener-element-event-listener"><span class="octicon octicon-link"></span></a>Dom.removeListener (<code>element</code>, <code>event</code>, <code>listener</code>)</h3>
+
+<p>Removes javascript listener from the element(s) for the given event type.</p>
+
+<h4>
+<a name="parameters-17" class="anchor" href="#parameters-17"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> a DOMElement, NodeList or just an array with DOMElements</li>
+<li>
+<code>event</code> a dom event name, eg. (<code>click</code>, <code>dblclick</code>, etc.)</li>
+<li>
+<code>listener</code> a javascript function wich will be called when given event occurs</li>
+</ul><h3>
+<a name="domdispatch-element-event-options" class="anchor" href="#domdispatch-element-event-options"><span class="octicon octicon-link"></span></a>Dom.dispatch (<code>element</code>, <code>event</code>, <code>options</code>)</h3>
+
+<p>Execute all handlers and behaviors attached to the element(s) for the given event type</p>
+
+<h4>
+<a name="parameters-18" class="anchor" href="#parameters-18"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> a DOMElement, NodeList or just an array with DOMElements</li>
+<li>
+<code>event</code> a dom event name, eg. (<code>click</code>, <code>dblclick</code>, etc.)</li>
+<li>
+<code>options</code> event options object eg. (<code>screenX</code>, <code>screenY</code>, etc.)</li>
+</ul><h3>
+<a name="domhaslistener-element-event-listener" class="anchor" href="#domhaslistener-element-event-listener"><span class="octicon octicon-link"></span></a>Dom.hasListener (<code>element</code>, <code>event</code>, <code>listener</code>)</h3>
+
+<p>Determine whether a supplied listener is attached to the element</p>
+
+<h4>
+<a name="parameters-19" class="anchor" href="#parameters-19"><span class="octicon octicon-link"></span></a>Parameters</h4>
+
+<ul>
+<li>
+<code>element</code> a DOMElement, NodeList or just an array with DOMElements</li>
+<li>
+<code>event</code> a dom event name, eg. (<code>click</code>, <code>dblclick</code>, etc.)</li>
+<li>
+<code>listener</code> a javascript callback function</li>
+</ul><h3>
+<a name="dom-events" class="anchor" href="#dom-events"><span class="octicon octicon-link"></span></a>DOM Events</h3>
+
+<h4>
+<a name="mouse-events" class="anchor" href="#mouse-events"><span class="octicon octicon-link"></span></a>Mouse Events</h4>
+
+<h5>
+<a name="click-domonclickelement-listener" class="anchor" href="#click-domonclickelement-listener"><span class="octicon octicon-link"></span></a><code>click</code> Dom.onClick(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A pointing device button has been pressed and released on an element.</p>
+
+<h5>
+<a name="dblclick-domondblclickelement-listener" class="anchor" href="#dblclick-domondblclickelement-listener"><span class="octicon octicon-link"></span></a><code>dblclick</code> Dom.onDblClick(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A pointing device button is clicked twice on an element.</p>
+
+<h5>
+<a name="mouseover-domonmouseoverelement-listener" class="anchor" href="#mouseover-domonmouseoverelement-listener"><span class="octicon octicon-link"></span></a><code>mouseover</code> Dom.onMouseOver(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A pointing device is moved onto the element that has the listener attached or onto one of its children.</p>
+
+<h5>
+<a name="mouseout-domonmouseoutelement-listener" class="anchor" href="#mouseout-domonmouseoutelement-listener"><span class="octicon octicon-link"></span></a><code>mouseout</code> Dom.onMouseOut(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A pointing device is moved off the element that has the listener attached or off one of its children.</p>
+
+<h5>
+<a name="mousedown-domonmouseoutelement-listener" class="anchor" href="#mousedown-domonmouseoutelement-listener"><span class="octicon octicon-link"></span></a><code>mousedown</code> Dom.onMouseOut(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A pointing device button (usually a mouse) is pressed on an element.</p>
+
+<h5>
+<a name="mouseup-domonmouseupelement-listener" class="anchor" href="#mouseup-domonmouseupelement-listener"><span class="octicon octicon-link"></span></a><code>mouseup</code> Dom.onMouseUp(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A pointing device button is released over an element.</p>
+
+<h5>
+<a name="mouseenter-domonmouseenterelement-listener" class="anchor" href="#mouseenter-domonmouseenterelement-listener"><span class="octicon octicon-link"></span></a><code>mouseenter</code> Dom.onMouseEnter(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A pointing device is moved onto the element that has the listener attached.</p>
+
+<h5>
+<a name="mouseleave-domonmouseleaveelement-listener" class="anchor" href="#mouseleave-domonmouseleaveelement-listener"><span class="octicon octicon-link"></span></a><code>mouseleave</code> Dom.onMouseLeave(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A pointing device is moved off the element that has the listener attached.</p>
+
+<h5>
+<a name="mousemove-domonmousemoveelement-listener" class="anchor" href="#mousemove-domonmousemoveelement-listener"><span class="octicon octicon-link"></span></a><code>mousemove</code> Dom.onMouseMove(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A pointing device is moved over an element.</p>
+
+<h3>
+<a name="form-events" class="anchor" href="#form-events"><span class="octicon octicon-link"></span></a>Form Events</h3>
+
+<h5>
+<a name="focus-domonfocuselement-listener" class="anchor" href="#focus-domonfocuselement-listener"><span class="octicon octicon-link"></span></a><code>focus</code> Dom.onFocus(<code>element</code>, <code>listener</code>)</h5>
+
+<p>An element has received focus (does not bubble).</p>
+
+<h5>
+<a name="blur-domonblurelement-listener" class="anchor" href="#blur-domonblurelement-listener"><span class="octicon octicon-link"></span></a><code>blur</code> Dom.onBlur(<code>element</code>, <code>listener</code>)</h5>
+
+<p>An element has lost focus (does not bubble).</p>
+
+<h5>
+<a name="select-domonselectelement-listener" class="anchor" href="#select-domonselectelement-listener"><span class="octicon octicon-link"></span></a><code>select</code> Dom.onSelect(<code>element</code>, <code>listener</code>)</h5>
+
+<p>Some text is input being selected.</p>
+
+<h5>
+<a name="change-domonchangeelement-listener" class="anchor" href="#change-domonchangeelement-listener"><span class="octicon octicon-link"></span></a><code>change</code> Dom.onChange(<code>element</code>, <code>listener</code>)</h5>
+
+<p>An element loses focus and its value changed since gaining focus.</p>
+
+<h5>
+<a name="submit-domonsubmitelement-listener" class="anchor" href="#submit-domonsubmitelement-listener"><span class="octicon octicon-link"></span></a><code>submit</code> Dom.onSubmit<code>element</code>, <code>listener</code>)</h5>
+
+<p>A form is submitted.</p>
+
+<h5>
+<a name="reset-domonresetelement-listener" class="anchor" href="#reset-domonresetelement-listener"><span class="octicon octicon-link"></span></a><code>reset</code> Dom.onReset(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A form is reset.</p>
+
+<h3>
+<a name="keyboard-events" class="anchor" href="#keyboard-events"><span class="octicon octicon-link"></span></a>Keyboard Events</h3>
+
+<h5>
+<a name="keydown-domonkeydownelement-listener" class="anchor" href="#keydown-domonkeydownelement-listener"><span class="octicon octicon-link"></span></a><code>keydown</code> Dom.onKeyDown(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A key is pressed down.</p>
+
+<h5>
+<a name="keyup-domonkeyupelement-listener" class="anchor" href="#keyup-domonkeyupelement-listener"><span class="octicon octicon-link"></span></a><code>keyup</code> Dom.onKeyUp(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A key is released.</p>
+
+<h5>
+<a name="keypress-domonkeypresselement-listener" class="anchor" href="#keypress-domonkeypresselement-listener"><span class="octicon octicon-link"></span></a><code>keypress</code> Dom.onKeyPress(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A key is pressed down and that key normally produces a character value (use input instead).</p>
+
+<h3>
+<a name="drag-events" class="anchor" href="#drag-events"><span class="octicon octicon-link"></span></a>Drag Events</h3>
+
+<h5>
+<a name="drag-domondragelement-listener" class="anchor" href="#drag-domondragelement-listener"><span class="octicon octicon-link"></span></a><code>drag</code> Dom.onDrag(<code>element</code>, <code>listener</code>)</h5>
+
+<p>An element or text selection is being dragged (every 350ms).</p>
+
+<h5>
+<a name="dragstart-domondragstartelement-listener" class="anchor" href="#dragstart-domondragstartelement-listener"><span class="octicon octicon-link"></span></a><code>dragstart</code> Dom.onDragStart(<code>element</code>, <code>listener</code>)</h5>
+
+<p>The user starts dragging an element or text selection.</p>
+
+<h5>
+<a name="dragend-domondragendelement-listener" class="anchor" href="#dragend-domondragendelement-listener"><span class="octicon octicon-link"></span></a><code>dragend</code> Dom.onDragEnd(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A drag operation is being ended (by releasing a mouse button or hitting the escape key).</p>
+
+<h3>
+<a name="ui-events" class="anchor" href="#ui-events"><span class="octicon octicon-link"></span></a>UI Events</h3>
+
+<h5>
+<a name="load-domonloadelement-listener" class="anchor" href="#load-domonloadelement-listener"><span class="octicon octicon-link"></span></a><code>load</code> Dom.onLoad(<code>element</code>, <code>listener</code>)</h5>
+
+<p>A resource and its dependent resources have finished loading.</p>
+
+<h5>
+<a name="scroll-domonscrollelement-listener" class="anchor" href="#scroll-domonscrollelement-listener"><span class="octicon octicon-link"></span></a><code>scroll</code> Dom.onScroll(<code>element</code>, <code>listener</code>)</h5>
+
+<p>The document view or an element has been scrolled.</p>
+
+<h5>
+<a name="unload-domonunloadelement-listener" class="anchor" href="#unload-domonunloadelement-listener"><span class="octicon octicon-link"></span></a><code>unload</code> Dom.onUnload(<code>element</code>, <code>listener</code>)</h5>
+
+<p>The document or a dependent resource is being unloaded.</p>
+
+<h5>
+<a name="resize-domonresizeelement-listener" class="anchor" href="#resize-domonresizeelement-listener"><span class="octicon octicon-link"></span></a><code>resize</code> Dom.onResize(<code>element</code>, <code>listener</code>)</h5>
+
+<p>The document view has been resized.</p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/dkraczkowski">dkraczkowski</a></p>
