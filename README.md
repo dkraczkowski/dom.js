@@ -206,7 +206,12 @@ Removes html element's assignment to the css class(es)
 
 ### Dom.create(`html`)
 
-Creates html element
+Creates and returns html element created from provided content
+
+#### Parameters
+ - `html` html string
+
+ #### [Example](examples/dom.create.html)
 
 #### Parameters
  - `html` string containings element's html
