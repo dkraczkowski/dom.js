@@ -171,6 +171,7 @@ Sets or gets HTMLElement's style
  - `style` css property name, array of css properties or object
 
 #### [Example](examples/dom.css.html)
+#### [Performance Comparison](http://jsperf.com/dom-js-jquery-css)
 
 ### Dom.getClass(`element`)
 
@@ -219,6 +220,7 @@ Creates and returns html element created from provided content
  - `html` html string
 
 #### [Example](examples/dom.create.html)
+#### [Performance Comparison](http://jsperf.com/dom-js-jquery-create)
 
 ### Dom.copy(`element`)
 
