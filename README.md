@@ -5,7 +5,7 @@ DOM.js is a lightweight, fast cross browser library for DOM traversal, manipulat
 
 Only 3KB compressed and gzipped!
 
-Some of the topics contain performance test comparison vs jquery. I will be adding them as fast as possible.
+Some of the topics contains performance tests (vs jquery). I will be adding them as soon as possible.
 
 API Reference
 =============
