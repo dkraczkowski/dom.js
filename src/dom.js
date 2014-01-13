@@ -1117,7 +1117,7 @@
     };
 
     /**
-     * Inserts content specified by the html argument before the HTMLElement
+     * Inserts content specified by the html argument after the HTMLElement
      *
      * @param {HTMLElement} element
      * @param {String|HTMLElement} html
@@ -1166,7 +1166,7 @@
     };
 
     /**
-     * Removes HTMLElement from dom treee
+     * Removes HTMLElement from dom tree
      *
      * @param {HTMLElement} element
      * @returns {HTMLElement} removed element

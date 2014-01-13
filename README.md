@@ -3,7 +3,7 @@ DOM.js
 
 DOM.js is a lightweight, fast cross browser library for DOM traversal, manipulation and event handling.
 
-Only 10KB!
+Only 3KB compressed and gzipped!
 
 API Reference
 =============
@@ -213,12 +213,12 @@ Creates and returns html element created from provided content
 
 #### [Example](examples/dom.create.html)
 
-### Dom.copy(`html`)
+### Dom.copy(`element`)
 
 Creates a copy of a node, and returns the clone.
 
 #### Parameters
- - `html` html element
+ - `element` html element
 
 #### [Example](examples/dom.copy.html)
 
@@ -261,6 +261,45 @@ Inserts content specified by the html argument at the beginning of HTMLElement
  - `html` html string or element that will be inserted
 
 #### [Example](examples\dom.prepend.html)
+
+### Dom.after(`element`, `html`)
+
+Inserts content specified by the html argument after the HTMLElement
+
+#### Parameters
+ - `element` html element after which html content will be placed
+ - `html` html string or element that will be inserted
+
+#### [Example](examples\dom.after.html)
+
+### Dom.before(`element`, `html`)
+
+Inserts content specified by the html argument before the HTMLElement
+
+#### Parameters
+ - `element` html element before which html content will be placed
+ - `html` html string or element that will be inserted
+
+#### [Example](examples\dom.before.html)
+
+### Dom.replace(`element`, `html`)
+
+Replaces given html element with content specified in html parameter
+
+#### Parameters
+ - `element` html element that will be replaced
+ - `html` html string or element that will be inserted
+
+#### [Example](examples\dom.replace.html)
+
+### Dom.remove(`element`)
+
+Removes HTMLElement from dom tree
+
+#### Parameters
+ - `element` html element that will be removed
+
+#### [Example](examples\dom.remove.html)
 
 #### Parameters
  - `html` string containings element's html
