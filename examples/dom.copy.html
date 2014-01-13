@@ -1,0 +1,17 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.copy</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<script type="text/javascript">
+    var h1 = Dom.create('<h1>Hello World</h1>');
+    var h1copy = Dom.copy(h1);
+    Dom.append(Dom.findByTagName('body')[0], h1);
+    Dom.append(Dom.findByTagName('body')[0], h1copy);
+
+</script>
+</body>
+</html>

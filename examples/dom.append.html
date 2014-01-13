@@ -1,0 +1,21 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.append</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test">click me</div>
+<ul id="list">
+    <li class="li1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3"><a href="#3">click me</a></li>
+</ul>
+
+<script type="text/javascript">
+    Dom.append(Dom.id('list'), '<li class="li4">li 4</li>');//ul will contain <li class="li1">...</li>...<li class="li4">...</li>
+    Dom.append(Dom.id('list'), Dom.findByClass('li1')[0]);//will move 1st element to the end of the list
+</script>
+</body>
+</html>

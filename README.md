@@ -21,13 +21,13 @@ API Reference
     - [Dom.previous](#dompreviouselement)
 
  - DOM manipulation
-    - [Dom.attribute]()
-    - [Dom.css]()
-    - [Dom.getClass]()
-    - [Dom.addClass]()
-    - [Dom.hasClass]()
-    - [Dom.removeClass]()
-    - [Dom.create]()
+    - [Dom.attribute](#domattributeelement-attribute)
+    - [Dom.css](#domcsselement-style)
+    - [Dom.getClass](#domgetclasselement)
+    - [Dom.addClass](#domaddclasselement-classname)
+    - [Dom.hasClass](#domhasclasselement-classname)
+    - [Dom.removeClass](#domremoveclasselement-classname)
+    - [Dom.create](#domcreatehtml)
     - [Dom.html]()
     - [Dom.text]()
     - [Dom.append]()
@@ -211,7 +211,56 @@ Creates and returns html element created from provided content
 #### Parameters
  - `html` html string
 
- #### [Example](examples/dom.create.html)
+#### [Example](examples/dom.create.html)
+
+### Dom.copy(`html`)
+
+Creates a copy of a node, and returns the clone.
+
+#### Parameters
+ - `html` html element
+
+#### [Example](examples/dom.copy.html)
+
+### Dom.html(`element` `html`)
+
+Gets or sets inner html of HTMLElement
+
+#### Parameters
+ - `element` html element
+ - `html` html string
+
+#### [Example](examples/dom.html.html)
+
+### Dom.text(`element`, `text`)
+
+Gets or sets text value of the HTML element
+
+#### Parameters
+ - `element` html element
+ - `text` text string
+
+#### [Example](examples\dom.text.html)
+
+### Dom.append(`element`, `html`)
+
+Inserts content specified by the html argument at the end of HTMLElement
+
+#### Parameters
+ - `element` html element
+ - `html` html string or element that will be inserted
+
+#### [Example](examples\dom.append.html)
+
+### Dom.prepend(`element`, `html`)
+
+Inserts content specified by the html argument at the beginning of HTMLElement
+
+#### Parameters
+ - `element` html element
+ - `html` html string or element that will be inserted
+
+#### [Example](examples\dom.prepend.html)
 
 #### Parameters
  - `html` string containings element's html

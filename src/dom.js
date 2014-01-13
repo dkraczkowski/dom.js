@@ -1032,6 +1032,16 @@
     };
 
     /**
+     * Creates a copy of a node, and returns the clone.
+     *
+     * @param {HTMLElement} element
+     * @return {HTMLElement}
+     */
+    Dom.copy = function(element) {
+        return element.cloneNode(true);
+    };
+
+    /**
      * Gets or sets inner html of HTMLElement
      *
      * @param {HTMLElement} element
@@ -1076,6 +1086,7 @@
 
     /**
      * Inserts content specified by the html argument at the end of HTMLElement
+     *
      * @param {HTMLElement} element
      * @param {String|HTMLElement} html
      * @return {HTMLElement} inserted element
