@@ -2,7 +2,7 @@
  * DOM.js is a lightweight & fast cross browser library for
  * dom traversal and manipulation.
  *
- * @author Dawid Kraczowski <Mighty Mosquito>
+ * @author Dawid Kraczowski <Crac>
  * @license MIT
  */
 ;(function (window, document, undefined) {
