@@ -73,7 +73,10 @@
      * @private
      */
     function _isIterable(object) {
-        return _isLiteralObject(object) || _isArray(object);
+        if (Dom.isNode(object) || Dom.isElement(object)) {
+            return false;
+        }
+        return _isLiteralObject(object) || _isArray(object) || (typeof object === 'object' && object['length'] !== undefined && object.length > 0);
     }
 
     function _getComputedStyle(element, prop) {
@@ -95,7 +98,7 @@
      * @private
      */
     function _each(object, callback) {
-        if (_isArray(object)) {
+        if (_isArray(object) || (typeof object === 'object' && object['length'] !== undefined)) {
             for (var i = 0, l = object.length; i < l; i++) {
                 callback.apply(object[i], [object[i], i]);
             }
@@ -898,6 +901,7 @@
             } else if (attribute === 'value' && element['value'] !== undefined) {//value?
                 result = element.value;
             } else {
+                console.log(element);
                 result = element.getAttribute(attribute);
             }
 
@@ -1039,7 +1043,7 @@
         }
 
         if (_isIterable(element)) {
-            _each(element, function() {
+            _each(element, function(e) {
                 Dom.addClass(e, className);
             });
             return Dom;
@@ -1049,7 +1053,7 @@
             for (var i in className) {
                 Dom.addClass(element, className[i]);
             }
-            return;
+            return Dom;
         }
 
         var classes = Dom.getClass(element);
@@ -1252,6 +1256,11 @@
     Dom.remove = function(element) {
         var parent = element.parentNode;
         return parent.removeChild(element);
+    };
+
+
+    Dom.extend = function(name, plugin) {
+
     };
 
 

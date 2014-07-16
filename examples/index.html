@@ -19,6 +19,14 @@
     console.log(Dom.addClass(Dom.findByTagName('li')[1], ["new-class-2", "new-class-3"]));//assignes 2 new classes
     console.log(Dom.getClass(Dom.findByTagName('li')[0]));//return ["li1", "new-class"]
 
+    Dom.extend('viewStack', {
+        init: function(element) {
+
+        },
+        events: {
+
+        }
+    });
 </script>
 </body>
 </html>
