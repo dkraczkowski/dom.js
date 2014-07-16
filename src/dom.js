@@ -76,6 +76,18 @@
         return _isLiteralObject(object) || _isArray(object);
     }
 
+    function _getComputedStyle(element, prop) {
+
+        if (typeof window.getComputedStyle === 'function') { //normal browsers
+            return window.getComputedStyle(element)[prop];
+        } else if (typeof document.currentStyle !== undefined) { //shitty browsers
+            return element.currentStyle[prop];
+        }
+
+        //??
+        return element.style[prop];
+    }
+
     /**
      *
      * @param object
@@ -928,7 +940,7 @@
      */
     Dom.css = function(element, style) {
 
-        if (_isIterable(element) && style !== null) {
+        if (_isIterable(element) && _isLiteralObject(style)) {
             _each (element, function(e) {
                 Dom.css(e, style);
             });
@@ -937,14 +949,14 @@
 
         //get one element
         if (typeof style === "string") {
-            return element.style[cssNameProperty(style)];
+            return _getComputedStyle(element, cssNameProperty(style));
         }
 
         //get array of elements
         if (_isArray(style)) {
             var css = {};
             for (var i in style) {
-                css[style[i]] = element.style[cssNameProperty(style[i])];
+                css[style[i]] = _getComputedStyle(element, cssNameProperty(style[i]));
             }
             return css;
         }
