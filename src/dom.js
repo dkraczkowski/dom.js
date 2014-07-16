@@ -57,16 +57,44 @@
     }
 
     /**
+     * Checks if javascript object is plain object
+     * @param object
+     * @returns {*|boolean}
+     * @private
+     */
+    function _isLiteralObject(object) {
+        return object && typeof object === "object" && Object.getPrototypeOf(object) === Object.getPrototypeOf({});
+    }
+
+    /**
      * Checks if object is iterable
      * @param {Object} object
      * @returns {boolean}
      * @private
      */
     function _isIterable(object) {
-        if (object['length'] !== undefined && object.length > 0) {
-            return true;
+        return _isLiteralObject(object) || _isArray(object);
+    }
+
+    /**
+     *
+     * @param object
+     * @param callback
+     * @private
+     */
+    function _each(object, callback) {
+        if (_isArray(object)) {
+            for (var i = 0, l = object.length; i < l; i++) {
+                callback.apply(object[i], [object[i], i]);
+            }
+            return;
         }
-        return false;
+
+        if (_isLiteralObject(object)) {
+            for (var key in object) {
+                callback.apply(object[key], [object[key], key]);
+            }
+        }
     }
 
     var addListener = document.addEventListener ? 'addEventListener' : 'attachEvent',
@@ -89,6 +117,32 @@
             };
         }
     }
+
+    /**
+     * Checks if given parameter is a DOMElement
+     * @param {object} element
+     * @returns {boolean}
+     */
+    Dom.isElement = function(element) {
+        if (typeof HTMLElement === 'object') {
+            return element instanceof HTMLElement;
+        }
+
+        return element && typeof element === 'object' && element.nodeType === 1 && typeof  element.nodeName === 'string';
+    };
+
+    /**
+     * Checks wheter given parameter is a DOMNode
+     * @param node
+     * @returns {*}
+     */
+    Dom.isNode = function(node) {
+        if (typeof Node === 'object') {
+            return node instanceof Node;
+        }
+
+        return node && typeof node === 'object' && typeof node.nodeType === 'number' && typeof node.nodeName === 'string';
+    };
 
     /**
      * Normalized Event object
@@ -166,7 +220,7 @@
      * UI Events
      */
 
-    //form events
+        //form events
     Dom.Event.ON_SELECT = 'select';
     Dom.Event.ON_RESET = 'reset';
     Dom.Event.ON_FOCUS = 'focus';
@@ -200,7 +254,7 @@
      * @param {String} event
      * @param {Function} listener
      *
-     * @returns {HTMLElement|false} returns HTMLElement if listener has been attached
+     * @returns {Dom|false} returns Dom if listener has been attached otherwise false
      */
     Dom.addListener = function (element, event, listener) {
         if (element === undefined) {
@@ -208,10 +262,15 @@
         }
 
         if (_isIterable(element)) {
-            for (var i = 0, n = element.length; i < n; i++) {
-                Dom.addListener(element[i], event, listener);
-            }
-            return element;
+            _each(element, function(e, index) {
+                Dom.addListener(e, event, listener);
+            });
+            return Dom;
+        }
+
+        if (!Dom.isNode(element)) {
+            console.error(element + "is not a DOMNode type", element);
+            throw new Error(element + " is not a DOMNode object");
         }
 
         element._event = element._event || {};
@@ -219,7 +278,7 @@
 
         //checks if listener already exists
         if (_indexOf(element._event[event].keys, listener) != -1) {
-            return element;
+            return Dom;
         }
 
         element._event[event].keys.push(listener);
@@ -233,7 +292,7 @@
 
         element[addListener](eventPrefix + event, _listener);
 
-        return element;
+        return Dom;
     };
 
     /**
@@ -243,7 +302,7 @@
      * @param {HTMLElement|NodeList} element
      * @param {string} type
      * @param {Object} options event options
-     * @returns {Event}
+     * @returns {Dom}
      */
     Dom.dispatch = function(element, type, options) {
         if (element === undefined) {
@@ -251,10 +310,11 @@
         }
 
         if (_isIterable(element)) {
-            for (var i = 0, n = element.length; i < n; i++) {
-                Dom.dispatch(element[i], type, options);
-            }
-            return element;
+
+            _each(element, function(e, index) {
+                Dom.dispatch(e, type, options);
+            });
+            return Dom;
         }
 
         if (!options) {
@@ -262,27 +322,27 @@
         }
 
         var o = {
-                type: type,
-                view: options.view || element.ownerDocument.defaultView,
-                detail: options.detail || 1,
-                screenX: options.screenX || 0,
-                screenY: options.screenY || 0,
-                clientX: options.clientX || 0,
-                clientY: options.clientY || 0,
-                button: options.button || 0,
-                ctrlKey: options.ctrlKey || false,
-                altKey: options.altKey || false,
-                shiftKey: options.shiftKey || false,
-                metaKey: options.metaKey || false,
-                bubbles: options.bubbles || true,
-                cancelable: options.cancelable || true
-            },
-            eventObjects = {
-                'HTMLEvents': /^(?:load|unload|abort|error|select|change|submit|reset|focus|blur|resize|scroll)$/,
-                'MouseEvents': /^(?:click|dblclick|mouse(?:down|up|over|move|out))$/
-            },
-            eventClass = 'Event',
-            event;
+            type: type,
+            view: options.view || element.ownerDocument.defaultView,
+            detail: options.detail || 1,
+            screenX: options.screenX || 0,
+            screenY: options.screenY || 0,
+            clientX: options.clientX || 0,
+            clientY: options.clientY || 0,
+            button: options.button || 0,
+            ctrlKey: options.ctrlKey || false,
+            altKey: options.altKey || false,
+            shiftKey: options.shiftKey || false,
+            metaKey: options.metaKey || false,
+            bubbles: options.bubbles || true,
+            cancelable: options.cancelable || true
+        };
+        var eventObjects = {
+            'HTMLEvents': /^(?:load|unload|abort|error|select|change|submit|reset|focus|blur|resize|scroll)$/,
+            'MouseEvents': /^(?:click|dblclick|mouse(?:down|up|over|move|out))$/
+        };
+        var eventClass = 'Event';
+        var event;
 
         for (var name in eventObjects) {
             if (eventObjects[name].test(type)) { eventClass = name; break; }
@@ -290,7 +350,7 @@
 
         if (document.createEvent) {
             event = element.ownerDocument.createEvent(eventClass);
-            if (eventClass = 'MouseEvents') {
+            if (eventClass == 'MouseEvents') {
                 event.initMouseEvent( o.type, o.bubbles, o.cancelable, o.view,
                     o.detail, o.screenX, o.screenY, o.clientX, o.clientY, o.ctrlKey,
                     o.altKey, o.shiftKey, o.metaKey, 0, null);
@@ -298,7 +358,7 @@
                 event.initEvent(type, o.bubbles, o.cancelable);
             }
             element.dispatchEvent(event);
-            return event;
+            return Dom;
 
         } else if (document.createEventObject) {
             o.clientX = o.pointerX;
@@ -308,7 +368,7 @@
                 event[key] = o[key];
             }
             element.fireEvent(eventPrefix + type, event);
-            return event;
+            return Dom;
         }
 
     };
@@ -318,17 +378,18 @@
      * @param {HTMLElement|NodeList} element
      * @param {String} event
      * @param {Function} listener
-     * @returns {*}
+     * @returns {object|false} returns Dom object if success otherwise false
      */
     Dom.removeListener = function (element, event, listener) {
         if (element === undefined) {
             return false;
         }
+
         if (_isIterable(element)) {
-            for (var i = 0, n = element.length; i < n; i++) {
-                Dom.removeListener(element[i], event, listener);
-            }
-            return element;
+            _each(element, function(e, index) {
+                Dom.removeListener(e, event, listener);
+            });
+            return Dom;
         }
 
         if (!element._event || !element._event[event]) {
@@ -345,7 +406,7 @@
         delete element._event[event].values[key];
         delete element._event[event].keys[key];
 
-        return element;
+        return Dom;
     };
 
     /**
@@ -371,7 +432,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param {Function} listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onClick = function (element, listener) {
         return Dom.addListener(element, Dom.Event.ON_CLICK, listener);
@@ -383,7 +444,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onDblClick = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_DBLCLICK, listener);
@@ -395,7 +456,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onMouseOver = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSEOVER, listener);
@@ -407,7 +468,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onMouseOut = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSEOUT, listener);
@@ -419,7 +480,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onMouseDown = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSEDOWN, listener);
@@ -431,7 +492,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onMouseUp = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSEUP, listener);
@@ -443,7 +504,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onMouseEnter = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSEENTER, listener);
@@ -455,7 +516,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onMouseLeave = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSELEAVE, listener);
@@ -467,7 +528,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onMouseMove = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_MOUSEMOVE, listener);
@@ -480,7 +541,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onDrag = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_DRAG, listener);
@@ -492,7 +553,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onDragStart = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_DRAGSTART, listener);
@@ -504,7 +565,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onDragEnd = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_DRAGEND, listener);
@@ -516,7 +577,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onFocus = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_FOCUS, listener);
@@ -528,7 +589,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onBlur = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_BLUR, listener);
@@ -540,7 +601,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onSelect = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_SELECT, listener);
@@ -552,7 +613,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onChange = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_CHANGE, listener);
@@ -564,7 +625,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onSubmit = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_SUBMIT, listener);
@@ -576,7 +637,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onReset = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_RESET, listener);
@@ -588,7 +649,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onLoad = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_LOAD, listener);
@@ -600,7 +661,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onScroll = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_SCROLL, listener);
@@ -612,7 +673,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onUnload = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_UNLOAD, listener);
@@ -624,7 +685,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onResize = function(element, listener) {
         return Dom.addListener(element, Dom.Event.ON_RESIZE, listener);
@@ -636,7 +697,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param {Function} listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onKeyDown = function (element, listener) {
         return Dom.addListener(element, Dom.Event.ON_KEYDOWN, listener);
@@ -648,7 +709,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param {Function} listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onKeyUp = function (element, listener) {
         return Dom.addListener(element, Dom.Event.ON_KEYUP, listener);
@@ -660,7 +721,7 @@
      * @see Dom.addListener
      * @param {HTMLElement|NodeList} element
      * @param {Function} listener
-     * @returns {HTMLElement|false}
+     * @returns {Dom|false}
      */
     Dom.onKeyPress = function (element, listener) {
         return Dom.addListener(element, Dom.Event.ON_KEYPRESS, listener);
@@ -844,10 +905,8 @@
         }
 
         //set attribute(s)
-        if (_isObject(attribute)) {
+        if (_isLiteralObject(attribute)) {
             for (var i in attribute) {
-
-
                 if (attribute[i] === null) {
                     element.removeAttribute(i);
                 } else {
@@ -869,6 +928,13 @@
      */
     Dom.css = function(element, style) {
 
+        if (_isIterable(element) && style !== null) {
+            _each (element, function(e) {
+                Dom.css(e, style);
+            });
+            return Dom;
+        }
+
         //get one element
         if (typeof style === "string") {
             return element.style[cssNameProperty(style)];
@@ -883,7 +949,7 @@
             return css;
         }
 
-        if (_isObject(style)) {
+        if (_isLiteralObject(style)) {
             //set csses
             for (var i in style) {
                 element.style[cssNameProperty(i)] = style[i];
@@ -961,10 +1027,10 @@
         }
 
         if (_isIterable(element)) {
-            for (var i = 0, n = element.length; i < n; i++) {
-                Dom.addClass(element[i], className);
-            }
-            return;
+            _each(element, function() {
+                Dom.addClass(e, className);
+            });
+            return Dom;
         }
 
         if (_isArray(className)) {
@@ -980,7 +1046,7 @@
             classes.push(className);
         }
         classes = classes.join(' ');
-        Dom.attribute(element, {class: classes});
+        return Dom.attribute(element, {class: classes});
     };
 
     /**
@@ -995,10 +1061,10 @@
         }
 
         if (_isIterable(element)) {
-            for (var i = 0, n = element.length; i < n; i++) {
-                Dom.removeClass(element[i], className);
-            }
-            return;
+            _each(element, function() {
+                Dom.removeClass(e, className);
+            });
+            return Dom;
         }
 
         var classes = Dom.getClass(element);
@@ -1008,7 +1074,7 @@
             return;
         }
         classes.splice(i, 1);
-        Dom.attribute(element, {class: classes.join(' ')});
+        return Dom.attribute(element, {class: classes.join(' ')});
 
     };
 
@@ -1175,6 +1241,7 @@
         var parent = element.parentNode;
         return parent.removeChild(element);
     };
+
 
     //export dom
     window.Dom = Dom;
