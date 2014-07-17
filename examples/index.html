@@ -6,12 +6,27 @@
     <script src="../src/dom.js"></script>
 </head>
 <body>
-<div id="test" style="margin: 10px;">click me</div>
+<div id="test" style="margin: 10px;">click me<a>a</a></div>
 <ul>
     <li class="li1"><a href="#1">click me</a></li>
     <li class="li2"><a href="#2">click me</a></li>
     <li class="li3 item3"><a href="#3">click me</a></li>
 </ul>
+
+
+<div class="data-test" data-extend="view-stack">
+    <nav>
+        <ul>
+            <li><a href="#view-1">view 1</a></li>
+            <li><a href="#view-2">view 2</a></li>
+        </ul>
+    </nav>
+    <div class="container">
+        <div id="view-1">view 1 content</div>
+        <div id="view-2">view 2 content</div>
+    </div>
+</div>
+
 
 <script type="text/javascript">
 
@@ -19,14 +34,7 @@
     console.log(Dom.addClass(Dom.findByTagName('li')[1], ["new-class-2", "new-class-3"]));//assignes 2 new classes
     console.log(Dom.getClass(Dom.findByTagName('li')[0]));//return ["li1", "new-class"]
 
-    Dom.extend('viewStack', {
-        init: function(element) {
 
-        },
-        events: {
-
-        }
-    });
 </script>
 </body>
 </html>

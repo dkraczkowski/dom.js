@@ -133,6 +133,11 @@
         }
     }
 
+    var _domReadyHandlers = [];
+    var _domLoadedHandlers = [];
+    var _isDomReady = false;
+    var _isDomLoaded = false;
+
     /**
      * Checks if given parameter is a DOMElement
      * @param {object} element
@@ -749,9 +754,13 @@
      *
      * Supported from IE 8.0, FF 3.5, Chrome 4.0, Safari 3.1
      * @param {String} selector
+     * @oaram {DOMElement} element not required
      * @returns {NodeList}
      */
-    Dom.find = function (selector) {
+    Dom.find = function (selector, element) {
+        if (Dom.isNode(element)) {
+            return element.querySelectorAll(selector);
+        }
         return document.querySelectorAll(selector);
     };
 
@@ -901,7 +910,6 @@
             } else if (attribute === 'value' && element['value'] !== undefined) {//value?
                 result = element.value;
             } else {
-                console.log(element);
                 result = element.getAttribute(attribute);
             }
 
@@ -1258,11 +1266,79 @@
         return parent.removeChild(element);
     };
 
+    /**
+     * Sets handler which will be executed as soon as
+     * document will load
+     *
+     * @param {Function} handler
+     * @returns {Dom}
+     */
+    Dom.loaded = function(handler) {
+        if (_isDomLoaded !== false) {
+            handler.call(null, _isDomLoaded);
+            return Dom;
+        }
 
-    Dom.extend = function(name, plugin) {
-
+        _domLoadedHandlers.push(handler);
+        return Dom;
     };
 
+    /**
+     * Sets handler which will be executed as soon as
+     * document will be ready
+     *
+     * @param {Function} handler
+     * @returns {Dom}
+     */
+    Dom.ready = function(handler) {
+        if (_isDomReady !== false) {
+            handler.call(null, _isDomReady);
+            return Dom;
+        }
+        _domReadyHandlers.push(handler);
+        return Dom;
+    };
+
+    function _onDOMReady(e) {
+
+        var event = new Dom.Event(e);
+        _isDomReady = event;
+
+        _each(_domReadyHandlers, function(fn) {
+            fn.call(null, event);
+        });
+    }
+
+    function _onDOMLoaded(e) {
+
+        var event = new Dom.Event(e);
+        _isDomLoaded = event;
+
+        _each(_domLoadedHandlers, function(fn) {
+            fn.call(null, event);
+        });
+    }
+
+    //on load
+    if (window.onload !== null) {
+        _domLoadedHandlers.push(window.onload);
+    }
+    window.onload = _onDOMLoaded;
+
+    //on ready
+    if (addListener === 'attachEvent') {//shitty browsers
+        document[addListener]('onreadystatechange', function(e) {
+            if (document.readyState === 'complete') {
+                document[removeListener]('onreadystatechange', arguments.callee);
+                _onDOMReady(e);
+            }
+        });
+    } else {//ecma compatible browsers
+        document[addListener]('DOMContentLoaded', function(e) {
+            document[removeListener]('DOMContentLoaded', arguments.callee, false);
+            _onDOMReady(e);
+        }, false);
+    }
 
     //export dom
     window.Dom = Dom;
