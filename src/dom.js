@@ -57,6 +57,16 @@
     }
 
     /**
+     * Checks if given value is a function
+     * @param {*} object
+     * @returns {boolean}
+     * @private
+     */
+    function _isFunction(object) {
+        return typeof object === 'function';
+    }
+
+    /**
      * Checks if javascript object is plain object
      * @param object
      * @returns {*|boolean}
@@ -77,6 +87,47 @@
             return false;
         }
         return _isLiteralObject(object) || _isArray(object) || (typeof object === 'object' && object['length'] !== undefined && object.length > 0);
+    }
+
+    /**
+     * Clones object and returns its copy.
+     * Copies Objects, Arrays, Functions and primitives.
+     *
+     * @param {Object} object
+     * @private
+     */
+    function _cloneObject(object) {
+        var copy;
+        var property;
+        var type;
+
+        if (!_isObject(object) || object === null) {
+            copy = object;
+            return copy;
+        }
+
+        if (_isArray(object)) {
+            copy = [];
+            for (var i = 0, l = object.length; i < l; i++) {
+                copy[i] = _cloneObject(object[i]);
+            }
+            return copy;
+        }
+
+        copy = new object.constructor();
+
+        for (property in object) {
+            if (!object.hasOwnProperty(property)) {
+                continue;
+            }
+
+            if (_isObject(object[property]) && object[property] !== null) {
+                copy[property] = _cloneObject(object[property]);
+            } else {
+                copy[property] = object[property];
+            }
+        }
+        return copy;
     }
 
     function _getComputedStyle(element, prop) {
@@ -137,6 +188,7 @@
     var _domLoadedHandlers = [];
     var _isDomReady = false;
     var _isDomLoaded = false;
+    var _domWidgets = {};
 
     /**
      * Checks if given parameter is a DOMElement
@@ -278,7 +330,7 @@
      */
     Dom.addListener = function (element, event, listener) {
         if (element === undefined) {
-            return false;
+            throw new Error("Parameter cannot be undefined");
         }
 
         if (_isIterable(element)) {
@@ -289,7 +341,6 @@
         }
 
         if (!Dom.isNode(element)) {
-            console.error(element + "is not a DOMNode type", element);
             throw new Error(element + " is not a DOMNode object");
         }
 
@@ -326,7 +377,7 @@
      */
     Dom.dispatch = function(element, type, options) {
         if (element === undefined) {
-            return false;
+            throw new Error("Parameter cannot be undefined");
         }
 
         if (_isIterable(element)) {
@@ -335,6 +386,10 @@
                 Dom.dispatch(e, type, options);
             });
             return Dom;
+        }
+
+        if (!Dom.isNode(element)) {
+            throw new Error(element + " is not a DOMNode object");
         }
 
         if (!options) {
@@ -402,7 +457,7 @@
      */
     Dom.removeListener = function (element, event, listener) {
         if (element === undefined) {
-            return false;
+            throw new Error("Parameter cannot be undefined");
         }
 
         if (_isIterable(element)) {
@@ -410,6 +465,10 @@
                 Dom.removeListener(e, event, listener);
             });
             return Dom;
+        }
+
+        if (!Dom.isNode(element)) {
+            throw new Error(element + " is not a DOMNode object");
         }
 
         if (!element._event || !element._event[event]) {
@@ -438,6 +497,10 @@
      * @returns {boolean}
      */
     Dom.hasListener = function (element, event, listener) {
+        if (!Dom.isNode(element)) {
+            throw new Error(element + " is not a DOMNode object");
+        }
+
         if (!element._event || !element._event[event]) {
             return false;
         }
@@ -812,6 +875,9 @@
      * @returns {HTMLElement}
      */
     Dom.parent = function(element) {
+        if (!Dom.isNode(element)) {
+            throw new Error(element + " is not a DOMNode object");
+        }
         return element.parentNode;
     };
 
@@ -859,6 +925,10 @@
      * @returns {HTMLElement}
      */
     Dom.next = function(element) {
+        if (!Dom.isNode(element)) {
+            throw new Error(element + " is not a DOMNode object");
+        }
+
         var result = element.nextSibling;
         if (result.nodeType != 1) {
             return Dom.next(result);
@@ -873,6 +943,10 @@
      * @returns {HTMLElement}
      */
     Dom.previous = function(element) {
+        if (!Dom.isNode(element)) {
+            throw new Error(element + " is not a DOMNode object");
+        }
+
         var result = element.previousSibling;
         if (result.nodeType != 1) {
             return Dom.previous(result);
@@ -897,6 +971,9 @@
      * Dom.attribute(el, {href: "#new"}); //sets href attribute's value
      */
     Dom.attribute = function(element, attribute)  {
+        if (!Dom.isNode(element)) {
+            throw new Error(element + " is not a DOMNode object");
+        }
 
         //get one attribute
         if (typeof attribute === "string") {
@@ -959,6 +1036,10 @@
             return Dom;
         }
 
+        if (!Dom.isNode(element)) {
+            throw new Error(element + " is not a DOMNode object");
+        }
+
         //get one element
         if (typeof style === "string") {
             return _getComputedStyle(element, cssNameProperty(style));
@@ -991,9 +1072,10 @@
      * @returns {Array}
      */
     Dom.getClass = function(element) {
-        if (element === undefined) {
-            return false;
+        if (!Dom.isNode(element)) {
+            throw new Error(element + " is not a DOMNode object");
         }
+
         var attribute = Dom.attribute(element, 'class');
         if (!attribute) {
             return [];
@@ -1017,8 +1099,8 @@
      * @returns {boolean}
      */
     Dom.hasClass = function(element, className) {
-        if (element === undefined) {
-            return false;
+        if (!Dom.isNode(element)) {
+            throw new Error(element + " is not a DOMNode object");
         }
 
         if (_isString(className)) {
@@ -1047,7 +1129,7 @@
      */
     Dom.addClass = function(element, className) {
         if (element === undefined) {
-            return false;
+            throw new Error("Dom.addClass first parameter cannot be undefined");
         }
 
         if (_isIterable(element)) {
@@ -1055,6 +1137,10 @@
                 Dom.addClass(e, className);
             });
             return Dom;
+        }
+
+        if (!Dom.isNode(element)) {
+            throw new Error(element + " is not a DOMNode object");
         }
 
         if (_isArray(className)) {
@@ -1081,7 +1167,7 @@
      */
     Dom.removeClass = function(element, className) {
         if (element === undefined) {
-            return;
+            throw new Error("Dom.removeClass first parameter cannot be undefined");
         }
 
         if (_isIterable(element)) {
@@ -1089,6 +1175,10 @@
                 Dom.removeClass(e, className);
             });
             return Dom;
+        }
+
+        if (!Dom.isNode(element)) {
+            throw new Error("Dom.removeClass" + element + " is not a DOMNode object");
         }
 
         var classes = Dom.getClass(element);
@@ -1128,6 +1218,9 @@
      * @return {HTMLElement}
      */
     Dom.copy = function(element) {
+        if (!Dom.isNode(element)) {
+            throw new Error("Dom.copy" + element + " is not a DOMNode object");
+        }
         return element.cloneNode(true);
     };
 
@@ -1139,6 +1232,9 @@
      * @returns {String}
      */
     Dom.html = function(element, string) {
+        if (!Dom.isNode(element)) {
+            throw new Error("Dom.html" + element + " is not a DOMNode object");
+        }
 
         if (_isString(string)) {
             element.innerHTML = string;
@@ -1156,6 +1252,10 @@
      * @returns {*}
      */
     Dom.text = function(element, string) {
+
+        if (!Dom.isNode(element)) {
+            throw new Error("Dom.text " + element + " is not a DOMNode object");
+        }
 
         if (_isString(string)) {
 
@@ -1183,6 +1283,10 @@
      */
     Dom.append = function(element, html) {
 
+        if (!Dom.isNode(element)) {
+            throw new Error("Dom.append " + element + " is not a DOMNode object");
+        }
+
         if (_isString(html)) {
             html = Dom.create(html);
         }
@@ -1199,6 +1303,10 @@
      */
     Dom.prepend = function(element, html) {
 
+        if (!Dom.isNode(element)) {
+            throw new Error("Dom.prepend " + element + " is not a DOMNode object");
+        }
+
         if (_isString(html)) {
             html = Dom.create(html);
         }
@@ -1214,6 +1322,10 @@
      * @returns {HTMLElement} inserted element
      */
     Dom.after = function(element, html) {
+
+        if (!Dom.isNode(element)) {
+            throw new Error("Dom.after " + element + " is not a DOMNode object");
+        }
 
         if (_isString(html)) {
             html = Dom.create(html);
@@ -1232,6 +1344,10 @@
      */
     Dom.before = function(element, html) {
 
+        if (!Dom.isNode(element)) {
+            throw new Error("Dom.before " + element + " is not a DOMNode object");
+        }
+
         if (_isString(html)) {
             html = Dom.create(html);
         }
@@ -1248,6 +1364,11 @@
      * @returns {HTMLElement} inserted element
      */
     Dom.replace = function(element, html) {
+
+        if (!Dom.isNode(element)) {
+            throw new Error("Dom.replace " + element + " is not a DOMNode object");
+        }
+
         if (_isString(html)) {
             html = Dom.create(html);
         }
@@ -1262,8 +1383,72 @@
      * @returns {HTMLElement} removed element
      */
     Dom.remove = function(element) {
+
+        if (!Dom.isNode(element)) {
+            throw new Error("Dom.remove " + element + " is not a DOMNode object");
+        }
+
         var parent = element.parentNode;
         return parent.removeChild(element);
+    };
+
+    /**
+     * Gets/Sets element data
+     * @param {HTMLElement} element
+     * @param {String|object} name not required
+     * @returns {*}
+     */
+    Dom.data = function(element, name) {
+        if (!Dom.isNode(element)) {
+            throw new Error("Dom.data " + element + " is not a DOMNode object");
+        }
+
+        //get all element's data
+        if (name === undefined) {
+            if (element.hasOwnProperty('dataset')) {
+                var dataset = {};
+                for (var i in element.dataset) {
+                    dataset[i] = element.dataset[i];
+                }
+                return dataset;
+            } else {//pollyfill for shitty browsers
+                var dataset = {};
+                for (var i = 0, attributes = element.attributes, l = attributes.length; i < l; i++) {
+                    var attr = attributes.item(i);
+                    if (attr.nodeName.substr(0, 5) !== 'data-') {
+                        continue;
+                    }
+                    dataset[attr.nodeName.substr(5)] = attr.nodeValue;
+                }
+                return dataset;
+            }
+        }
+
+        //get one attribute
+        if (_isString(name)) {
+            return Dom.attribute(element, 'data-' + name);
+        }
+
+        //get dataset by user names
+        if (_isArray(name)) {
+            var dataset = {};
+            for (var i = 0, l = name.length; i < l; i++) {
+                var prop = name[i];
+                dataset[prop] = Dom.attribute(element, 'data-' + prop);
+            }
+            return dataset;
+        }
+
+        //set/remove attributes
+        if (_isLiteralObject(name)) {
+            var attrs = {};
+            for (var i in name) {
+                var value = name[i];
+                attrs['data-' + i] = value;
+            }
+            Dom.attribute(element, attrs);
+        }
+
     };
 
     /**
@@ -1297,6 +1482,16 @@
         }
         _domReadyHandlers.push(handler);
         return Dom;
+    };
+
+    /**
+     * Defines new dom widget
+     *
+     * @param {String} selector
+     * @param {Object} widget definition
+     */
+    Dom.widget = function(selector, definition) {
+        _domWidgets[selector] = definition;
     };
 
     function _onDOMReady(e) {
@@ -1339,6 +1534,8 @@
             _onDOMReady(e);
         }, false);
     }
+
+    
 
     //export dom
     window.Dom = Dom;
