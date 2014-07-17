@@ -86,7 +86,9 @@
         if (Dom.isNode(object) || Dom.isElement(object)) {
             return false;
         }
-        return _isLiteralObject(object) || _isArray(object) || (typeof object === 'object' && object['length'] !== undefined && object.length > 0);
+
+        var r = _isLiteralObject(object) || _isArray(object) || (typeof object === 'object' && object !== null && object['length'] !== undefined);
+        return r;
     }
 
     /**
@@ -340,7 +342,7 @@
             return Dom;
         }
 
-        if (!Dom.isNode(element)) {
+        if (!Dom.isNode(element) && element !== window) {
             throw new Error(element + " is not a DOMNode object");
         }
 
@@ -467,7 +469,7 @@
             return Dom;
         }
 
-        if (!Dom.isNode(element)) {
+        if (!Dom.isNode(element) && element !== window) {
             throw new Error(element + " is not a DOMNode object");
         }
 
@@ -497,7 +499,7 @@
      * @returns {boolean}
      */
     Dom.hasListener = function (element, event, listener) {
-        if (!Dom.isNode(element)) {
+        if (!Dom.isNode(element) && element !== window) {
             throw new Error(element + " is not a DOMNode object");
         }
 
@@ -821,10 +823,13 @@
      * @returns {NodeList}
      */
     Dom.find = function (selector, element) {
+        var result = [];
         if (Dom.isNode(element)) {
-            return element.querySelectorAll(selector);
+             result = element.querySelectorAll(selector);
+        } else {
+            result = document.querySelectorAll(selector);
         }
-        return document.querySelectorAll(selector);
+        return result;
     };
 
     /**
@@ -1171,7 +1176,7 @@
         }
 
         if (_isIterable(element)) {
-            _each(element, function() {
+            _each(element, function(e) {
                 Dom.removeClass(e, className);
             });
             return Dom;
@@ -1491,7 +1496,14 @@
      * @param {Object} widget definition
      */
     Dom.widget = function(selector, definition) {
+        if (_isDomReady) {
+            _each(Dom.find(selector), function (element) {
+                _factoryWidget(element, selector, definition);
+            });
+            return Dom;
+        }
         _domWidgets[selector] = definition;
+        return Dom;
     };
 
     function _onDOMReady(e) {
@@ -1512,6 +1524,25 @@
         _each(_domLoadedHandlers, function(fn) {
             fn.call(null, event);
         });
+    }
+
+    function _factoryWidget(element, selector, definition) {
+        var widget = _cloneObject(definition);
+        if (widget.hasOwnProperty('init')) {
+            widget.selector = selector;
+            widget.element = element;
+            widget._element = Dom.copy(element);
+            element._domWidget = widget;
+            element.destroyWidget = function() {
+                var widget = this._domWidget;
+                delete widget.element;
+                delete this._domWidget;
+                widget.hasOwnProperty('destroy') ? widget.destroy() : null;
+                Dom.replace(element, widget._element);
+                delete widget;
+            }
+            widget.init(element, Dom.data(element));
+        }
     }
 
     //on load
@@ -1535,7 +1566,15 @@
         }, false);
     }
 
-    
+    //handle widgets
+    Dom.ready(function _widgetFactory(e) {
+        for (var selector in _domWidgets) {
+            var definition = _domWidgets[selector];
+            _each(Dom.find(selector), function (element) {
+                _factoryWidget(element, selector, definition);
+            });
+        }
+    });
 
     //export dom
     window.Dom = Dom;
