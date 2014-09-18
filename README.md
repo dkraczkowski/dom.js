@@ -182,7 +182,7 @@ Gets css classes of the given element
 
 #### [Example](examples/dom.getclass.html)
 
-### Dom.addClass(`element`, `className`)
+### Dom.addClass(`element|nodeList|Array`, `className`)
 
 Assignes css class(es) to the html element(s)
 
@@ -202,7 +202,7 @@ Checks whether html element is assigned to the given class(es)
 
 #### [Example](examples/dom.hasclass.html)
 
-### Dom.removeClass(`element`, `className`)
+### Dom.removeClass(`element|nodeList|Array`, `className`)
 
 Removes html element's assignment to the css class(es)
 
@@ -316,7 +316,7 @@ Removes HTMLElement from dom tree
 
 #### [Example](examples/dom.removeclass.html)
 
-### Dom.addListener (`element`, `event`, `listener`)
+### Dom.addListener (`element|nodeList|Array`, `event`, `listener`)
 
 Attaches javascript listener to the element(s) for the given event type.
 
@@ -331,7 +331,7 @@ You can check list of aliases, explanation and event names [here](#dom-events).
 
 #### [Example](examples/dom.addlistener.html)
 
-### Dom.removeListener (`element`, `event`, `listener`)
+### Dom.removeListener (`element|nodeList|Array`, `event`, `listener`)
 
 Removes javascript listener from the element(s) for the given event type.
 
@@ -341,7 +341,7 @@ Removes javascript listener from the element(s) for the given event type.
  - `event` a dom event name, eg. (`click`, `dblclick`, etc.)
  - `listener` a javascript function wich will be called when given event occurs
 
-### Dom.dispatch (`element`, `event`, `options`)
+### Dom.dispatch (`element|nodeList|Array`, `event`, `options`)
 
 Execute all handlers and behaviors attached to the element(s) for the given event type
 
@@ -365,86 +365,86 @@ Determine whether a supplied listener is attached to the element
 
 #### Mouse Events
 
-#####`click` Dom.onClick(`element`, `listener`)
+#####`click` Dom.onClick(`element|nodeList|Array`, `listener`)
 A pointing device button has been pressed and released on an element.
 
-#####`dblclick` Dom.onDblClick(`element`, `listener`)
+#####`dblclick` Dom.onDblClick(`element|nodeList|Array`, `listener`)
 A pointing device button is clicked twice on an element.
 
-#####`mouseover` Dom.onMouseOver(`element`, `listener`)
+#####`mouseover` Dom.onMouseOver(`element|nodeList|Array`, `listener`)
 A pointing device is moved onto the element that has the listener attached or onto one of its children.
 
-#####`mouseout` Dom.onMouseOut(`element`, `listener`)
+#####`mouseout` Dom.onMouseOut(`element|nodeList|Array`, `listener`)
 A pointing device is moved off the element that has the listener attached or off one of its children.
 
-#####`mousedown` Dom.onMouseOut(`element`, `listener`)
+#####`mousedown` Dom.onMouseOut(`element|nodeList|Array`, `listener`)
 A pointing device button (usually a mouse) is pressed on an element.
 
-#####`mouseup` Dom.onMouseUp(`element`, `listener`)
+#####`mouseup` Dom.onMouseUp(`element|nodeList|Array`, `listener`)
 A pointing device button is released over an element.
 
-#####`mouseenter` Dom.onMouseEnter(`element`, `listener`)
+#####`mouseenter` Dom.onMouseEnter(`element|nodeList|Array`, `listener`)
 A pointing device is moved onto the element that has the listener attached.
 
-#####`mouseleave` Dom.onMouseLeave(`element`, `listener`)
+#####`mouseleave` Dom.onMouseLeave(`element|nodeList|Array`, `listener`)
 A pointing device is moved off the element that has the listener attached.
 
-#####`mousemove` Dom.onMouseMove(`element`, `listener`)
+#####`mousemove` Dom.onMouseMove(`element|nodeList|Array`, `listener`)
 A pointing device is moved over an element.
 
 
 ### Form Events
 
-#####`focus` Dom.onFocus(`element`, `listener`)
+#####`focus` Dom.onFocus(`element|nodeList|Array`, `listener`)
 An element has received focus (does not bubble).
 
-#####`blur` Dom.onBlur(`element`, `listener`)
+#####`blur` Dom.onBlur(`element|nodeList|Array`, `listener`)
 An element has lost focus (does not bubble).
 
-#####`select` Dom.onSelect(`element`, `listener`)
+#####`select` Dom.onSelect(`element|nodeList|Array`, `listener`)
 Some text is input being selected.
 
-#####`change` Dom.onChange(`element`, `listener`)
+#####`change` Dom.onChange(`element|nodeList|Array`, `listener`)
 An element loses focus and its value changed since gaining focus.
 
-#####`submit` Dom.onSubmit`element`, `listener`)
+#####`submit` Dom.onSubmit`element|nodeList|Array`, `listener`)
 A form is submitted.
 
-#####`reset` Dom.onReset(`element`, `listener`)
+#####`reset` Dom.onReset(`element|nodeList|Array`, `listener`)
 A form is reset.
 
 ### Keyboard Events
 
-#####`keydown` Dom.onKeyDown(`element`, `listener`)
+#####`keydown` Dom.onKeyDown(`element|nodeList|Array`, `listener`)
 A key is pressed down.
 
-#####`keyup` Dom.onKeyUp(`element`, `listener`)
+#####`keyup` Dom.onKeyUp(`element|nodeList|Array`, `listener`)
 A key is released.
 
-#####`keypress` Dom.onKeyPress(`element`, `listener`)
+#####`keypress` Dom.onKeyPress(`element|nodeList|Array`, `listener`)
 A key is pressed down and that key normally produces a character value (use input instead).
 
 ### Drag Events
 
-#####`drag` Dom.onDrag(`element`, `listener`)
+#####`drag` Dom.onDrag(`element|nodeList|Array`, `listener`)
 An element or text selection is being dragged (every 350ms).
 
-#####`dragstart` Dom.onDragStart(`element`, `listener`)
+#####`dragstart` Dom.onDragStart(`element|nodeList|Array`, `listener`)
 The user starts dragging an element or text selection.
 
-#####`dragend` Dom.onDragEnd(`element`, `listener`)
+#####`dragend` Dom.onDragEnd(`element|nodeList|Array`, `listener`)
 A drag operation is being ended (by releasing a mouse button or hitting the escape key).
 
 ### UI Events
 
-#####`load` Dom.onLoad(`element`, `listener`)
+#####`load` Dom.onLoad(`element|nodeList|Array`, `listener`)
 A resource and its dependent resources have finished loading.
 
-#####`scroll` Dom.onScroll(`element`, `listener`)
+#####`scroll` Dom.onScroll(`element|nodeList|Array`, `listener`)
 The document view or an element has been scrolled.
 
-#####`unload` Dom.onUnload(`element`, `listener`)
+#####`unload` Dom.onUnload(`element|nodeList|Array`, `listener`)
 The document or a dependent resource is being unloaded.
 
-#####`resize` Dom.onResize(`element`, `listener`)
+#####`resize` Dom.onResize(`element|nodeList|Array`, `listener`)
 The document view has been resized.
