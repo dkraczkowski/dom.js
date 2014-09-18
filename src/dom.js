@@ -83,7 +83,7 @@
      * @private
      */
     function _isIterable(object) {
-        if (Dom.isNode(object) || Dom.isElement(object)) {
+        if (Dom.isNode(object) || Dom.isElement(object) || object === window) {
             return false;
         }
 
@@ -1186,6 +1186,10 @@
             throw new Error("Dom.removeClass" + element + " is not a DOMNode object");
         }
 
+        if (!className) {
+            return Dom.attribute(element, {class: null});
+        }
+
         var classes = Dom.getClass(element);
         var i = _indexOf(classes, className);
 
@@ -1492,10 +1496,10 @@
     /**
      * Defines new dom widget
      *
-     * @param {String} selector
+     * @param {String} selector|element
      * @param {Object} widget definition
      */
-    Dom.widget = function(selector, definition) {
+    Dom.extend = function(selector, definition) {
         if (_isDomReady) {
             _each(Dom.find(selector), function (element) {
                 _factoryWidget(element, selector, definition);
@@ -1504,6 +1508,13 @@
         }
         _domWidgets[selector] = definition;
         return Dom;
+    };
+
+    Dom.widget = function(element) {
+        if (!Dom.isNode(element)) {
+            throw new Error(element + ' is not a DOMElement');
+        }
+
     };
 
     function _onDOMReady(e) {
@@ -1532,15 +1543,16 @@
             widget.selector = selector;
             widget.element = element;
             widget._element = Dom.copy(element);
-            element._domWidget = widget;
-            element.destroyWidget = function() {
-                var widget = this._domWidget;
+            widget.destroy = function() {
+                var _widget = this._domWidget;
                 delete widget.element;
                 delete this._domWidget;
-                widget.hasOwnProperty('destroy') ? widget.destroy() : null;
+                widget.hasOwnProperty('onDestroy') ? widget.onDestroy() : null;
                 Dom.replace(element, widget._element);
-                delete widget;
-            }
+                delete _widget;
+            };
+
+            element._domWidget = widget;
             widget.init(element, Dom.data(element));
         }
     }
