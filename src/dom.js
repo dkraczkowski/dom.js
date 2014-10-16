@@ -1208,10 +1208,11 @@
      * @return {HTMLElement}
      */
     Dom.create = function(html) {
-        var div = document.createElement('div');
+        var div = document.createElement('tbody');
         var doc = document.createDocumentFragment();
         Dom.html(div, html);
         var children = Dom.children(div);
+
 
         for (var i = 0, j = children.length; i < j; i++) {
             Dom.append(doc, children[i]);
@@ -1518,6 +1519,9 @@
     };
 
     function _onDOMReady(e) {
+        //add most used selectors
+        Dom.body = Dom.findByTagName('body')[0];
+        Dom.head = Dom.findByTagName('head')[0];
 
         var event = new Dom.Event(e);
         _isDomReady = event;
@@ -1590,5 +1594,6 @@
 
     //export dom
     window.Dom = Dom;
+
 
 })(this, document);

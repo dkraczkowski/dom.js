@@ -6,9 +6,29 @@
     <script src="../src/dom.js"></script>
 </head>
 <body>
+
+
+<table id="example-table">
+
+</table>
+
 <script type="text/javascript">
     var h1 = Dom.create('<h1>Hello World</h1>');
     Dom.append(Dom.findByTagName('body')[0], h1);
+
+
+    //create table
+
+    var tr = Dom.create('<tr id="test-tr"><td>some</td><td>test</td></tr>');
+    
+    Dom.append(Dom.id('example-table'), tr);
+
+    Dom.ready(function() {
+        var a = Dom.create('<a>test a</a>');
+        Dom.append(Dom.body, a);
+
+        Dom.append(Dom.id('test-tr'), '<td>Td creation</td>');
+    });
 </script>
 </body>
 </html>
