@@ -319,8 +319,8 @@ Removes HTMLElement from dom tree
 
 ### Dom.template(`tpl`, `hash`)
 
-Parses micro template string, and replaces `{{ tag }}` occurencies in string into values taken
-from hash object. Supports functions, numbers and strings
+Parses micro template string. Replaces `{{ tag }}` occurrences in string into values taken
+from hash object. Supports functions, numbers and strings.
 
 #### Parameters
  - `tpl` micro template string
