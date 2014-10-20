@@ -1,0 +1,58 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.widget</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+
+<div id="widget-example"
+     data-widget="tabs"
+     data-tabs=".tabs"
+     data-container=".container"
+     data-on-tab-change="">
+
+    <ul class="tabs">
+
+    </ul>
+    <div class="container">
+
+    </div>
+
+</div>
+
+<script type="text/javascript">
+
+
+    Dom.widget('tabs', {
+        options: {
+            onTabChange: 'on-tab-change',
+            container: {
+                tag: 'tab-content',
+                value: '.content'
+            },
+            tabs: {
+                tag: 'tab-items'
+            }
+        },
+        create: function(element, options) {
+
+        }
+    });
+
+    var widget = Dom.widget(Dom.id('widget-example'), 'tabs', {
+        tabs: '.tabs',
+        container: '.container',
+        onTabChanged: function() {
+
+        }
+    });
+
+
+
+
+
+</script>
+</body>
+</html>

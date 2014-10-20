@@ -38,6 +38,7 @@ API Reference
     - [Dom.before](#dombeforeelement-html)
     - [Dom.replace](#domreplaceelement-html)
     - [Dom.remove](#domremoveelement)
+    - [Dom.template](#domtemplatetpl-hash)
 
  - Event handling
     - [Dom.addListener](#domaddlistener-element-event-listener)
@@ -315,6 +316,24 @@ Removes HTMLElement from dom tree
  - `className` class(es) that will be removed from the element's class attribute
 
 #### [Example](examples/dom.removeclass.html)
+
+### Dom.template(`tpl`, `hash`)
+
+Parses micro template string, and replaces `{{ tag }}` occurencies in string into values taken
+from hash object. Supports functions, numbers and strings
+
+#### Parameters
+ - `tpl` micro template string
+ - `hash` hash object
+
+#### [Example](examples\dom.template.html)
+
+#### Parameters
+ - `html` string containings element's html
+ - `className` class(es) that will be removed from the element's class attribute
+
+#### [Example](examples/dom.removeclass.html)
+
 
 ### Dom.addListener (`element|nodeList|Array`, `event`, `listener`)
 

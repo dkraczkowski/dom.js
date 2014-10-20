@@ -2,7 +2,7 @@
  * DOM.js is a lightweight & fast cross browser library for
  * dom traversal and manipulation.
  *
- * @author Dawid Kraczowski <Crac>
+ * @author Dawid Kraczowski <Krac>
  * @license MIT
  */
 ;(function (window, document, undefined) {
@@ -44,6 +44,16 @@
      */
     function _isString(object) {
         return typeof object === 'string';
+    }
+
+    /**
+     * Checks if given value is a number
+     * @param {*} object
+     * @returns {boolean}
+     * @private
+     */
+    function _isNumeric(object) {
+        return typeof object === 'number' && isFinite(object);
     }
 
     /**
@@ -1285,6 +1295,42 @@
     };
 
     /**
+     * Micro template support, replaces the {{tag}} with variable
+     * in hash array passed to function
+     *
+     * @param {String} tpl template string
+     * @param {Object} hash
+     * @returns {String}
+     *
+     * @example
+     * ```
+     * var str = '<h1 class="{{class}}">{{text}}</h1>';
+     * var hash = {class: 'example', text: function () {return 'header';}};
+     *
+     * var result = Dom.template(str, hash);//<h1 class="example">header</h1>
+     * ```
+     */
+    Dom.template = function(tpl, hash) {
+
+        var regex = /\{\{.*?\}\}/gi;
+
+        return tpl.replace(regex, function replacer(str, pos, tpl) {
+            var properties = str.replace('{{', '').replace('}}', '').trim().split(' ');
+            var tag = properties[0];
+            if (!tag || !hash.hasOwnProperty(tag)) {
+                return '';
+            }
+            if (_isFunction(hash[tag])) {
+                return hash[tag].apply(tpl, properties);
+            }
+            if (_isString(hash[tag]) || _isNumeric(hash[tag])) {
+                return hash[tag];
+            }
+            return '';
+        });
+    };
+
+    /**
      * Inserts content specified by the html argument at the end of HTMLElement
      *
      * @param {HTMLElement} element
@@ -1523,6 +1569,14 @@
         Dom.body = Dom.findByTagName('body')[0];
         Dom.head = Dom.findByTagName('head')[0];
 
+        //widget support
+        for (var selector in _domWidgets) {
+            var definition = _domWidgets[selector];
+            _each(Dom.find(selector), function (element) {
+                _factoryWidget(element, selector, definition);
+            });
+        }
+
         var event = new Dom.Event(e);
         _isDomReady = event;
 
@@ -1582,15 +1636,6 @@
         }, false);
     }
 
-    //handle widgets
-    Dom.ready(function _widgetFactory(e) {
-        for (var selector in _domWidgets) {
-            var definition = _domWidgets[selector];
-            _each(Dom.find(selector), function (element) {
-                _factoryWidget(element, selector, definition);
-            });
-        }
-    });
 
     //export dom
     window.Dom = Dom;

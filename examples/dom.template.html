@@ -1,0 +1,32 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.template</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+
+<div id="rendered-microtemplate">
+
+</div>
+
+
+<script type="text/javascript">
+    var textView = Dom.id('rendered-microtemplate');
+    var tpl = '<div class="{{ class 1 }} {{ class }}">{{ text }}</div>';
+    var hash = {
+        'class': function(tag, number) {
+            if (number) {
+                return 'many';
+            }
+
+            return 'one';
+        },
+        text: "Some example text"
+    };
+
+    Dom.html(textView, Dom.template(tpl, hash));
+</script>
+</body>
+</html>
