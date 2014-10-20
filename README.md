@@ -250,7 +250,7 @@ Gets or sets text value of the HTML element
  - `element` html element
  - `text` text string
 
-#### [Example](examples\dom.text.html)
+#### [Example](examples/dom.text.html)
 
 ### Dom.append(`element`, `html`)
 
@@ -260,7 +260,7 @@ Inserts content specified by the html argument at the end of HTMLElement
  - `element` html element
  - `html` html string or element that will be inserted
 
-#### [Example](examples\dom.append.html)
+#### [Example](examples/dom.append.html)
 
 ### Dom.prepend(`element`, `html`)
 
@@ -270,7 +270,7 @@ Inserts content specified by the html argument at the beginning of HTMLElement
  - `element` html element
  - `html` html string or element that will be inserted
 
-#### [Example](examples\dom.prepend.html)
+#### [Example](examples/dom.prepend.html)
 
 ### Dom.after(`element`, `html`)
 
@@ -280,7 +280,7 @@ Inserts content specified by the html argument after the HTMLElement
  - `element` html element after which html content will be placed
  - `html` html string or element that will be inserted
 
-#### [Example](examples\dom.after.html)
+#### [Example](examples/dom.after.html)
 
 ### Dom.before(`element`, `html`)
 
@@ -290,7 +290,7 @@ Inserts content specified by the html argument before the HTMLElement
  - `element` html element before which html content will be placed
  - `html` html string or element that will be inserted
 
-#### [Example](examples\dom.before.html)
+#### [Example](examples/dom.before.html)
 
 ### Dom.replace(`element`, `html`)
 
@@ -300,7 +300,7 @@ Replaces given html element with content specified in html parameter
  - `element` html element that will be replaced
  - `html` html string or element that will be inserted
 
-#### [Example](examples\dom.replace.html)
+#### [Example](examples/dom.replace.html)
 
 ### Dom.remove(`element`)
 
@@ -309,7 +309,7 @@ Removes HTMLElement from dom tree
 #### Parameters
  - `element` html element that will be removed
 
-#### [Example](examples\dom.remove.html)
+#### [Example](examples/dom.remove.html)
 
 #### Parameters
  - `html` string containings element's html
@@ -326,7 +326,7 @@ from hash object. Supports functions, numbers and strings.
  - `tpl` micro template string
  - `hash` hash object
 
-#### [Example](examples\dom.template.html)
+#### [Example](examples/dom.template.html)
 
 #### Parameters
  - `html` string containings element's html
