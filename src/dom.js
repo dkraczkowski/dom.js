@@ -2,6 +2,8 @@
  * DOM.js is a lightweight & fast cross browser library for
  * dom traversal and manipulation.
  *
+ * Supports
+ *
  * @author Dawid Kraczowski <Krac>
  * @license MIT
  */
@@ -142,16 +144,30 @@
         return copy;
     }
 
+    /**
+     * Gets element's computed style
+     * @param element
+     * @param prop
+     * @returns {*}
+     * @private
+     */
     function _getComputedStyle(element, prop) {
 
+        var computedStyle;
+
         if (typeof window.getComputedStyle === 'function') { //normal browsers
-            return window.getComputedStyle(element)[prop];
+            computedStyle = window.getComputedStyle(element);
         } else if (typeof document.currentStyle !== undefined) { //shitty browsers
-            return element.currentStyle[prop];
+            computedStyle = element.currentStyle;
+        } else {
+            computedStyle = element.style;
         }
 
-        //??
-        return element.style[prop];
+        if (prop) {
+            return computedStyle[prop];
+        } else {
+            return computedStyle;
+        }
     }
 
     /**
@@ -175,25 +191,25 @@
         }
     }
 
-    var addListener = document.addEventListener ? 'addEventListener' : 'attachEvent',
-        removeListener = document.removeEventListener ? 'removeEventListener' : 'detachEvent',
-        eventPrefix = document.addEventListener ? '' : 'on',
-        createEvent = document.createEvent ? 'createEvent' : 'createEventObject',
-        dispatchEvent = document.dispatchEvent ? 'dispatchEvent' : 'fireEvent',
-        Dom = {},
-        cssNameProperty = function(prop) {return prop;};
+    //get ie version
+    var ie = (function() {
+        var undef, v = 3, div = document.createElement('div'), all = div.getElementsByTagName('i');
+        while ( div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->', all[0]);
+        return v > 4 ? v : undef;
+    }());
+    var addListener = document.addEventListener ? 'addEventListener' : 'attachEvent';
+    var removeListener = document.removeEventListener ? 'removeEventListener' : 'detachEvent';
+    var eventPrefix = document.addEventListener ? '' : 'on';
+    var createEvent = document.createEvent ? 'createEvent' : 'createEventObject';
+    var dispatchEvent = document.dispatchEvent ? 'dispatchEvent' : 'fireEvent';
+    var Dom = {};
+    var cssNameProperty = function(prop) {return prop;};
 
-    //is trident 4?
-    var ua = navigator.userAgent;
-    var re  = new RegExp('Trident/([0-9]{1,}[\.0-9]{0,})');
-    if (re.exec(ua) != null) {
-        rv = parseFloat( RegExp.$1 );
-        if (rv == 4) {
-            cssNameProperty = function(prop) {
-                for(var exp=/-([a-z0-9])/; exp.test(prop); prop = prop.replace(exp,RegExp.$1.toUpperCase()));
-                return prop;
-            };
-        }
+    if (ie && ie < 9) {
+        cssNameProperty = function(prop) {
+            for(var exp=/-([a-z0-9])/; exp.test(prop); prop = prop.replace(exp,RegExp.$1.toUpperCase()));
+            return prop;
+        };
     }
 
     var _domReadyHandlers = [];
@@ -272,11 +288,36 @@
         this.ctrlKey = _e.ctrlKey;
         this.shiftKey = _e.shiftKey;
         this.altKey = _e.altKey;
-        this.relativeY = _e.layerY || _e.offsetY;
-        this.relativeX = _e.layerX || _e.offsetX;
+        this.layerY = _e.layerY || _e.offsetY;
+        this.layerX = _e.layerX || _e.offsetX;
         this.x = _e.x || _e.clientX;
         this.y = _e.y || _e.clientY;
+        this.keyCode = _e.keyCode;
+        if (ie & ie < 9) {
+            this.button = _e.button == 1 ? Dom.Mouse.LEFT_BUTTON : (_e.button == 4 ? Dom.Mouse.MIDDLE_BUTTON : Dom.Mouse.RIGHT_BUTTON);
+        } else if (_e.hasOwnProperty('which')) {
+            this.button = _e.which == 1 ? Dom.Mouse.LEFT_BUTTON : (_e.which == 2 ? Dom.Mouse.MIDDLE_BUTTON : Dom.Mouse.RIGHT_BUTTON);
+        } else {
+            this.button = _e.button;
+        }
     };
+
+    Dom.Draggable = function(element, options) {
+        this.element = element;
+        this.options = {
+            onDragStart: options.onDragStart || function() {},
+            onDragEnd: options.onDragEnd || function() {},
+            onDragMove: options.onDragMove || function() {},
+            onDragEnter: options.onDragEnter || function() {},
+            onDragLeave: options.onDragLeave || function() {}
+        }
+    };
+
+    Dom.Mouse = {};
+
+    Dom.Mouse.LEFT_BUTTON = 0;
+    Dom.Mouse.MIDDLE_BUTTON = 1;
+    Dom.Mouse.RIGHT_BUTTON = 2;
 
     /**
      * Mouse events
@@ -321,7 +362,7 @@
     Dom.Event.ON_SCROLL = 'scroll';
 
     /**
-     * Drag and drop events
+     * Standard drag and drop events
      */
     Dom.Event.ON_DRAG = 'drag';
     Dom.Event.ON_DRAGSTART = 'dragstart';
@@ -330,6 +371,16 @@
     Dom.Event.ON_DRAGLEAVE = 'dragleave';
     Dom.Event.ON_DRAGOVER = 'dragover';
     Dom.Event.ON_DROP = 'drop';
+
+    /**
+     * Dom drag and drop events
+     */
+    Dom.Event.ON_DOM_DRAGSTART = 'onDomDragStart';
+    Dom.Event.ON_DOM_DRAGEND = 'onDomDragEnd';
+    Dom.Event.ON_DOM_DRAGMOVE = 'onDomDragMove';
+    Dom.Event.ON_DOM_DROP = 'onDomDrop';
+    Dom.Event.ON_DOM_DRAGENTER = 'onDomDragEnter';
+    Dom.Event.ON_DOM_DRAGLEAVE = 'onDomDragLeave';
 
     /**
      * Attaches javascript listener to the element(s) for the given event type
@@ -1507,6 +1558,11 @@
 
     };
 
+    Dom.draggable = function(element, options) {
+        var draggable = new Dom.Draggable(element, options);
+        return draggable;
+    };
+
     /**
      * Sets handler which will be executed as soon as
      * document will load
@@ -1540,34 +1596,12 @@
         return Dom;
     };
 
-    /**
-     * Defines new dom widget
-     *
-     * @param {String} selector|element
-     * @param {Object} widget definition
-     */
-    Dom.extend = function(selector, definition) {
-        if (_isDomReady) {
-            _each(Dom.find(selector), function (element) {
-                _factoryWidget(element, selector, definition);
-            });
-            return Dom;
-        }
-        _domWidgets[selector] = definition;
-        return Dom;
-    };
-
-    Dom.widget = function(element) {
-        if (!Dom.isNode(element)) {
-            throw new Error(element + ' is not a DOMElement');
-        }
-
-    };
-
     function _onDOMReady(e) {
         //add most used selectors
         Dom.body = Dom.findByTagName('body')[0];
         Dom.head = Dom.findByTagName('head')[0];
+
+        _startDomDrag();
 
         //widget support
         for (var selector in _domWidgets) {
@@ -1593,26 +1627,6 @@
         _each(_domLoadedHandlers, function(fn) {
             fn.call(null, event);
         });
-    }
-
-    function _factoryWidget(element, selector, definition) {
-        var widget = _cloneObject(definition);
-        if (widget.hasOwnProperty('init')) {
-            widget.selector = selector;
-            widget.element = element;
-            widget._element = Dom.copy(element);
-            widget.destroy = function() {
-                var _widget = this._domWidget;
-                delete widget.element;
-                delete this._domWidget;
-                widget.hasOwnProperty('onDestroy') ? widget.onDestroy() : null;
-                Dom.replace(element, widget._element);
-                delete _widget;
-            };
-
-            element._domWidget = widget;
-            widget.init(element, Dom.data(element));
-        }
     }
 
     //on load

@@ -1,0 +1,38 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.drag</title>
+    <script src="../src/dom.js"></script>
+    <style type="text/css">
+        #drop-1 {
+            display: block;
+            width: 200px;
+            height: 200px;
+            border: silver 2px dashed;
+
+        }
+    </style>
+</head>
+<body>
+
+
+<ul>
+    <li class="li1" id="drag-1"><a href="#1">click me</a></li>
+    <li class="li2"><a href="#2">click me</a></li>
+    <li class="li3"><a href="#3">click me</a></li>
+</ul>
+
+<div id="drop-1">
+
+</div>
+
+<script type="text/javascript">
+    var el = Dom.id('drag-1');
+    Dom.draggable(el);
+    Dom.onDragStart(el, function () {
+        console.log('drag started');
+    });
+</script>
+</body>
+</html>
