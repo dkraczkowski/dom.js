@@ -5,7 +5,6 @@ DOM.js is a lightweight, fast cross browser library for DOM traversal, manipulat
 
 Only 3KB compressed and gzipped!
 
-Some of the topics contains performance tests (vs jquery). I will be adding them as soon as possible.
 
 API Reference
 =============
@@ -83,7 +82,6 @@ Finds HTMLElements that match css pattern.
  - `selector` css seletor eg.(`ul > li`)
 
 #### [Example](examples/dom.find.html)
-#### [Performance Comparison](http://jsperf.com/dom-js-jquery-selector)
 
 
 ### Dom.id(`id`)
@@ -94,7 +92,6 @@ Returns HTMLElement with given id
  - `id` element's id
 
 #### [Example](examples/dom.id.html)
-#### [Performance Comparison](http://jsperf.com/dom-js-jquery-id)
 
 ### Dom.findByTagName(`tagName`)
 
@@ -124,7 +121,6 @@ Gets the parent of the html element
  - `element` html element
 
 #### [Example](examples/dom.parent.html)
-#### [Performance Comparison](http://jsperf.com/dom-js-jquery-id)
 
 ### Dom.children(`element`, `tag`)
 
@@ -135,7 +131,6 @@ Gets children elements of the html element
  - `tag` determines whether text nodes should be returned or tells function to filter children by tagname
 
 #### [Example](examples/dom.children.html)
-#### [Performance Comparison](http://jsperf.com/dom-js-jquery-children)
 
 
 ### Dom.next(`element`)
@@ -199,7 +194,6 @@ Gets or sets element's attribute(s) if the attribute(s) is not defined this meth
  - `attribute` attribute name, array of attribute names or object
 
 #### [Example](examples/dom.attribute.html)
-#### [Performance Comparison](http://jsperf.com/dom-js-jquery-attribute)
 
 ### Dom.css(`element`, `style`)
 
@@ -210,7 +204,6 @@ Sets or gets HTMLElement's style
  - `style` css property name, array of css properties or object
 
 #### [Example](examples/dom.css.html)
-#### [Performance Comparison](http://jsperf.com/dom-js-jquery-css)
 
 ### Dom.getClass(`element`)
 
@@ -259,7 +252,6 @@ Creates and returns html element created from provided content
  - `html` html string
 
 #### [Example](examples/dom.create.html)
-#### [Performance Comparison](http://jsperf.com/dom-js-jquery-create)
 
 ### Dom.copy(`element`)
 
