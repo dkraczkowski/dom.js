@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.offset</title>
+    <script src="../src/dom.js"></script>
+</head>
+<body>
+<div id="test" style="position: absolute; top: 10px">test div</div>
+
+
+<script type="text/javascript">
+    var elem = Dom.id('test');
+    console.log(Dom.offset(elem));
+    console.log(Dom.width(elem));
+    console.log(Dom.height(elem))
+</script>
+</body>
+</html>

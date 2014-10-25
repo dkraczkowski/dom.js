@@ -22,6 +22,11 @@ API Reference
     - [Dom.next](#domnextelement)
     - [Dom.previous](#dompreviouselement)
 
+ - Dom properties
+    - [Dom.offset] (#domoffsetelement)
+    - [Dom.width] (#domwidthelement)
+    - [Dom.height] (#domheightelement)
+
  - DOM manipulation
     - [Dom.attribute](#domattributeelement-attribute)
     - [Dom.css](#domcsselement-style)
@@ -151,6 +156,40 @@ Gets previous sibling element of the HTMLElement
  - `element` html element
 
 #### [Example](examples/dom.previous.html)
+
+### Dom.offset(`element`)
+
+Returns current coordinates of the element, relative to the document.
+Returned object contains properties:
+ - top
+ - right
+ - bottom
+ - left
+ - width
+ - height
+
+#### Parameters
+ - `element` html element
+
+#### [Example](examples/dom.offset.html)
+
+### Dom.width(`element`)
+
+Returns width of the element
+
+#### Parameters
+ - `element` html element
+
+#### [Example](examples/dom.offset.html)
+
+### Dom.height(`element`)
+
+Returns height of the element
+
+#### Parameters
+ - `element` html element
+
+#### [Example](examples/dom.offset.html)
 
 ### Dom.attribute(`element`, `attribute`)
 

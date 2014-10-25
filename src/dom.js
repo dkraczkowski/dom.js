@@ -4,7 +4,7 @@
  *
  * Supports
  *
- * @author Dawid Kraczowski <Krac>
+ * @author Dawid Kraczowski <Crac>
  * @license MIT
  */
 ;(function (window, document, undefined) {
@@ -294,30 +294,19 @@
         this.y = _e.y || _e.clientY;
         this.keyCode = _e.keyCode;
         if (ie & ie < 9) {
-            this.button = _e.button == 1 ? Dom.Mouse.LEFT_BUTTON : (_e.button == 4 ? Dom.Mouse.MIDDLE_BUTTON : Dom.Mouse.RIGHT_BUTTON);
+            this.button = _e.button == 1 ? Dom.Mouse.BUTTON_LEFT : (_e.button == 4 ? Dom.Mouse.BUTTON_MIDDLE : Dom.Mouse.BUTTON_RIGHT);
         } else if (_e.hasOwnProperty('which')) {
-            this.button = _e.which == 1 ? Dom.Mouse.LEFT_BUTTON : (_e.which == 2 ? Dom.Mouse.MIDDLE_BUTTON : Dom.Mouse.RIGHT_BUTTON);
+            this.button = _e.which == 1 ? Dom.Mouse.BUTTON_LEFT : (_e.which == 2 ? Dom.Mouse.BUTTON_MIDDLE : Dom.Mouse.BUTTON_RIGHT);
         } else {
             this.button = _e.button;
         }
     };
 
-    Dom.Draggable = function(element, options) {
-        this.element = element;
-        this.options = {
-            onDragStart: options.onDragStart || function() {},
-            onDragEnd: options.onDragEnd || function() {},
-            onDragMove: options.onDragMove || function() {},
-            onDragEnter: options.onDragEnter || function() {},
-            onDragLeave: options.onDragLeave || function() {}
-        }
-    };
-
     Dom.Mouse = {};
 
-    Dom.Mouse.LEFT_BUTTON = 0;
-    Dom.Mouse.MIDDLE_BUTTON = 1;
-    Dom.Mouse.RIGHT_BUTTON = 2;
+    Dom.Mouse.BUTTON_LEFT = 0;
+    Dom.Mouse.BUTTON_MIDDLE = 1;
+    Dom.Mouse.BUTTON_RIGHT = 2;
 
     /**
      * Mouse events
@@ -880,7 +869,7 @@
      *
      * Supported from IE 8.0, FF 3.5, Chrome 4.0, Safari 3.1
      * @param {String} selector
-     * @oaram {DOMElement} element not required
+     * @oaram {HTMLElement} element not required
      * @returns {NodeList}
      */
     Dom.find = function (selector, element) {
@@ -932,6 +921,58 @@
         if(document.querySelector && document.querySelectorAll ) {
             return document.querySelectorAll("." + name);
         }
+    };
+
+    /**
+     * Returns current coordinates of the element,
+     * relative to the document
+     *
+     * @param {HTMLElement} element
+     * @returns {*}
+     */
+    Dom.offset = function(element) {
+        if (!Dom.isElement(element)) {
+            return false;
+        }
+        var rect = element.getBoundingClientRect();
+
+        var offset = {
+            top: Math.round(rect.top),
+            right: Math.round(rect.right),
+            bottom: Math.round(rect.bottom),
+            left: Math.round(rect.left),
+            width: rect.width ? Math.round(rect.width) : Math.round(element.offsetWidth),
+            height: rect.height ? Math.round(rect.height) : Math.round(element.offsetHeight)
+
+        };
+
+        //fallback to css width and height
+        if (offset.width <= 0) {
+            offset.width = parseFloat(_getComputedStyle(element, 'width'));
+        }
+        if (offset.height <= 0) {
+            offset.height = parseFloat(_getComputedStyle(element, 'height'));
+        }
+
+        return offset;
+    };
+
+    /**
+     * Returns the width of the element
+     *
+     * @param {HTMLElement} element
+     */
+    Dom.width = function(element) {
+        return Dom.offset(element).width;
+    };
+
+    /**
+     * Returns the height of the element
+     *
+     * @param {HTMLElement} element
+     */
+    Dom.height = function(element) {
+        return Dom.offset(element).height;
     };
 
     /**
@@ -1558,11 +1599,6 @@
 
     };
 
-    Dom.draggable = function(element, options) {
-        var draggable = new Dom.Draggable(element, options);
-        return draggable;
-    };
-
     /**
      * Sets handler which will be executed as soon as
      * document will load
@@ -1600,8 +1636,6 @@
         //add most used selectors
         Dom.body = Dom.findByTagName('body')[0];
         Dom.head = Dom.findByTagName('head')[0];
-
-        _startDomDrag();
 
         //widget support
         for (var selector in _domWidgets) {

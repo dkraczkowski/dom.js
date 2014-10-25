@@ -33,6 +33,21 @@
     Dom.onDragStart(el, function () {
         console.log('drag started');
     });
+
+    Dom.onMouseDown(el, function(e) {
+        if (e.button != Dom.Mouse.BUTTON_LEFT) {
+           return;
+        }
+        var x = e.x;
+        var y = e.y;
+
+        e.preventDefault();
+        e.stopPropagation();
+        Dom.css(this, {position: absolute, display: block});
+        Dom.onMouseMove(this, function(e) {
+
+        });
+    });
 </script>
 </body>
 </html>
