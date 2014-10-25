@@ -45,10 +45,10 @@ API Reference
     - [Dom.template](#domtemplatetpl-hash)
 
  - Event handling
-    - [Dom.addListener](#domaddlistener-element-event-listener)
-    - [Dom.removeListener](#domremovelistener-element-event-listener)
+    - [Dom.addListener](#domaddlistener-elementnodelistarray-event-listener)
+    - [Dom.removeListener](#domremovelistener-elementnodelistarray-event-listener)
     - [Dom.hasListener](#domhaslistener-element-event-listener)
-    - [Dom.dispatch](#domdispatch-element-event-options)
+    - [Dom.dispatch](#domdispatch-elementnodelistarray-event-options)
 
  - [Dom Events](#dom-events)
     - [Mouse Events](#mouse-events)
