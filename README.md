@@ -22,12 +22,11 @@ API Reference
     - [Dom.next](#domnextelement)
     - [Dom.previous](#dompreviouselement)
 
- - Dom properties
+
+ - DOM manipulation
     - [Dom.offset] (#domoffsetelement)
     - [Dom.width] (#domwidthelement)
     - [Dom.height] (#domheightelement)
-
- - DOM manipulation
     - [Dom.attribute](#domattributeelement-attribute)
     - [Dom.css](#domcsselement-style)
     - [Dom.getClass](#domgetclasselement)
