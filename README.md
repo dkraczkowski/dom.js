@@ -1,10 +1,10 @@
 DOM.js
 ======
 
-DOM.js is a lightweight, fast cross browser library for DOM traversal, manipulation and event handling.
+DOM.js is a lightweight, fast cross browser (IE 8+, FF31+, SF5+, CH31+, OP24+) library for DOM traversal, manipulation and event handling.
+Main focus of the library is to simplify and unify work with the DOM.
 
 Only 3KB compressed and gzipped!
-
 
 API Reference
 =============
@@ -77,7 +77,7 @@ API Reference
 Finds HTMLElements that match css pattern.
 
 *Supported from IE 8.0, FF 3.5, Chrome 4.0, Safari 3.1*
-
+**Partial support in IE8 is due to being limited to CSS 2.1 selectors as well as only supporting simple selectors (not descendant selectors like p a)**
 #### Parameters
  - `selector` css seletor eg.(`ul > li`)
 
