@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Dom.drag</title>
+    <script src="../src/dom.js"></script>
+    <style type="text/css">
+        body {
+            font-family: Helvetica;
+        }
+        #drop-1 {
+            display: block;
+            width: 200px;
+            height: 200px;
+            border: silver 2px dashed;
+
+        }
+        .draggable {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            background: grey;
+            border-radius: 4px;
+        }
+
+        #simple-drag {
+            top: 10px;
+            left: 10px;
+        }
+
+        #drag-with-handler {
+            top: 200px;
+            left: 10px;
+
+            padding: 0;
+        }
+        .draggable a {
+            display: block;
+            width: 100%;
+            margin: 0;
+            height: 20px;
+            background: navy;
+            border-radius: 4px 4px 0px 0px;
+            color: white;
+            font-size: 12px;
+            line-height: 20px;
+            text-align: center;
+        }
+
+        .draggable .centered-text {
+            width: 100%;
+            position: absolute;
+            top: 50%;
+            line-height: 20px;
+            margin-top: -10px;
+            text-align: center;
+            color: white;
+        }
+
+        #drag-x {
+            top: 10px;
+            left: 200px;
+        }
+
+        #drag-y {
+            top: 200px;
+            left: 200px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="draggable" id="simple-drag"></div>
+
+<div class="draggable" id="drag-with-handler">
+    <a class="handler" id="drag-handler">handler</a>
+</div>
+
+<div class="draggable" id="drag-x">
+    <div class="centered-text">x axis only</div>
+</div>
+
+<div class="draggable" id="drag-y">
+    <div class="centered-text">y axis only</div>
+</div>
+
+<div class="draggable" id="drag-grid">
+    <div class="centered-text">aligned to grid</div>
+</div>
+
+<script type="text/javascript">
+    var el = Dom.id('simple-drag');
+    var el2 = Dom.id('drag-with-handler');
+    var x = Dom.id('drag-x');
+    var y = Dom.id('drag-y');
+    var grid = Dom.id('drag-grid');
+
+    var draggable = Dom.draggable(el);
+    var draggable2 = Dom.draggable(el2, {
+        handler: Dom.id("drag-handler")
+    });
+    var draggableX = Dom.draggable(x, {axis: 'x'});
+    var draggableY = Dom.draggable(y, {axis: 'y'});
+
+    var draggableGrid = Dom.draggable(grid, {grid: [100, 100]});
+
+</script>
+</body>
+</html>

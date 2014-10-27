@@ -10,6 +10,12 @@
 ;(function (window, document, undefined) {
 
     /**
+     * DOM global object
+     * @type {{}}
+     */
+    var Dom = {};
+
+    /**
      * Array.indexOf support
      * @param {Array} array
      * @param {*} obj
@@ -128,7 +134,11 @@
             return copy;
         }
 
-        copy = new object.constructor();
+        try {
+            copy = new object.constructor();
+        } catch (e) {
+            copy = {};
+        }
 
         for (property in object) {
             if (!object.hasOwnProperty(property)) {
@@ -142,6 +152,20 @@
             }
         }
         return copy;
+    }
+
+    /**
+     * Simple extend object helper
+     * @param {Object} a base object
+     * @param {Object} b extender object
+     * @returns {Object}
+     * @private
+     */
+    function _extendObject(a, b) {
+        for ( var prop in b ) {
+            a[ prop ] = b[ prop ];
+        }
+        return a;
     }
 
     /**
@@ -191,32 +215,73 @@
         }
     }
 
-    //get ie version
-    var ie = (function() {
-        var undef, v = 3, div = document.createElement('div'), all = div.getElementsByTagName('i');
-        while ( div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->', all[0]);
-        return v > 4 ? v : undef;
-    }());
+    var _domReadyHandlers = [];
+    var _domLoadedHandlers = [];
+    var _isDomReady = false;
+    var _isDomLoaded = false;
+    var _animationLastTime;
+
     var addListener = document.addEventListener ? 'addEventListener' : 'attachEvent';
     var removeListener = document.removeEventListener ? 'removeEventListener' : 'detachEvent';
     var eventPrefix = document.addEventListener ? '' : 'on';
     var createEvent = document.createEvent ? 'createEvent' : 'createEventObject';
     var dispatchEvent = document.dispatchEvent ? 'dispatchEvent' : 'fireEvent';
-    var Dom = {};
+    var vendors = ['Moz', 'ms', 'Webkit', 'O', ''];
     var cssNameProperty = function(prop) {return prop;};
+    var requestAnimationFrame = window.requestAnimationFrame;
+    var cancelAnimationFrame = window.cancelAnimationFrame || window.cancelRequestAnimationFrame;
+    var div = document.createElement('div');
+    var style = _getComputedStyle(div);
 
+    //ie?
+    var ie = (function() {
+        var undef, v = 3, div = document.createElement('div'), all = div.getElementsByTagName('i');
+        while ( div.innerHTML = '<!--[if gt IE ' + (++v) + ']><i></i><![endif]-->', all[0]);
+        return v > 4 ? v : undef;
+    }());
+
+    //css name property detection
     if (ie && ie < 9) {
         cssNameProperty = function(prop) {
             for(var exp=/-([a-z0-9])/; exp.test(prop); prop = prop.replace(exp,RegExp.$1.toUpperCase()));
             return prop;
         };
     }
+    //transition detection
+    var transitionSupport = (function() {
+        for (var i in vendors) {
+            if (_isString(style[vendors[i] + 'transition'])) {
+                return true;
+            }
+        }
+        return false;
+    })();
 
-    var _domReadyHandlers = [];
-    var _domLoadedHandlers = [];
-    var _isDomReady = false;
-    var _isDomLoaded = false;
-    var _domWidgets = {};
+    //request animation pollyfill
+    if (!requestAnimationFrame || !cancelAnimationFrame ) {
+        for( var i = 0; i < vendors.length; i++ ) {
+            var vendor = vendors[i];
+            requestAnimationFrame = requestAnimationFrame || window[vendor + 'RequestAnimationFrame'];
+            cancelAnimationFrame = cancelAnimationFrame || window[vendor + 'CancelAnimationFrame'] || window[vendor + 'CancelRequestAnimationFrame'];
+        }
+    }
+
+    if (!requestAnimationFrame || !cancelAnimationFrame) {
+        requestAnimationFrame = function(callback) {
+            var currentTime = new Date().getTime();
+            var timeToCall = Math.max(0, 16 - (currentTime - _animationLastTime));
+            var id = window.setTimeout(function _requestAnimationFrameTimeout() {
+                callback(currentTime + timeToCall);
+            }, timeToCall);
+
+            _animationLastTime = currentTime + timeToCall;
+            return id;
+        };
+
+        cancelAnimationFrame = function(id) {
+            window.clearTimeout(id);
+        };
+    }
 
     /**
      * Checks if given parameter is a DOMElement
@@ -244,6 +309,182 @@
         return node && typeof node === 'object' && typeof node.nodeType === 'number' && typeof node.nodeName === 'string';
     };
 
+    Dom.requestAnimationFrame = function() {
+        return requestAnimationFrame;
+    };
+
+    Dom.cancelAnimationFrame = function() {
+        return cancelAnimationFrame;
+    };
+
+    var Draggable = function(element, options) {
+        var options = options || {};
+        this.element = element;
+        this.options = {
+            onDragStart: options.onDragStart || function() {},
+            onDragMove: options.onDragMove || function() {},
+            onDragEnd: options.onDragEnd || function() {},
+            handler: options.handler || element,
+            cursor: options.cursor || 'move',
+            axis: options.axis || false,
+            grid: options.grid || [1, 1]
+        };
+        this.isDragging = false;
+        this.position = {
+            x: 'auto',
+            y: 'auto'
+        };
+        this._savedCursorState = this.options.handler.style.cursor;
+
+        function _onDragStart(e) {
+
+            if (e.button != Dom.Mouse.BUTTON_LEFT) {
+                return;
+            }
+            e.preventDefault();
+
+
+            var self = this;
+            var style = _getComputedStyle(self.element);
+            self.isDragging = true;
+            self.deltaX = 0;
+            self.deltaY = 0;
+            self.position.x = parseInt(style['left']);
+            self.position.y = parseInt(style['top']);
+            self.startX = e.x;
+            self.startY = e.y;
+            self.options.onDragStart.call(self, e);
+
+            if (isNaN(self.position.x)) {
+                self.position.x = 0;
+            }
+
+            if (isNaN(self.position.y)) {
+                self.position.y = 0;
+            }
+
+            var position = style['position'];
+            if (position != 'relative' && position != 'absolute') {
+                position = 'relative';
+            }
+
+            Dom.css(self.element, {
+                position: position,
+                top: self.position.y + 'px',
+                left: self.position.x + 'px'
+            });
+
+            Dom.css(self.options.handler, {
+                '-moz-user-select': 'none',
+                '-webkit-user-select': 'none',
+                'user-select': 'none',
+                '::selection': 'none',
+                cursor: self.options.cursor
+            });
+
+            (function _animate() {
+
+                if (self.isDragging) {
+                    requestAnimationFrame(_animate);
+                } else {
+                    return;
+                }
+                var y = self.deltaY + 'px';
+                var x = self.deltaX + 'px';
+
+                if (transitionSupport) {
+                    for (var i in vendors) {
+                        var transform = vendors[i] + 'transform';
+                        self.element.style[transform] = 'translate(' + x + ',' + y + ')';
+                    }
+                } else {
+                    self.element.style.top = self.position.y + self.deltaY + 'px';
+                    self.element.style.left = self.position.x + self.deltaX + 'px';
+                }
+
+
+            })();
+
+
+            function _onDrag(e) {
+                var deltaX = e.x - self.startX;
+                var deltaY = e.y - self.startY;
+                var gridX = self.options.grid[0];
+                var gridY = self.options.grid[1];
+
+
+
+                if (gridX >= 1) {
+                    deltaX = Math.round(deltaX / gridX) * gridX;
+                }
+
+                if (gridY >= 1) {
+                    deltaY = Math.round(deltaY / gridY) * gridY;
+                }
+
+
+                if (self.options.grid[1] >= 1) {
+                    deltaY -= deltaY % self.options.grid[1];
+                }
+
+                switch (self.options.axis) {
+                    case 'x':
+                        self.deltaX = deltaX;
+                        break;
+                    case 'y':
+                        self.deltaY = deltaY;
+                        break;
+                    default:
+                        self.deltaX = deltaX;
+                        self.deltaY = deltaY;
+                        break;
+                }
+
+                e.target = self.options.handler;//fix target
+                self.options.onDragMove.call(self, e);
+            }
+
+            function _onDragEnd(e) {
+                self.isDragging = false;
+                Dom.removeListener(document, Dom.Event.ON_MOUSEMOVE, _onDrag);
+                Dom.removeListener(document, Dom.Event.ON_MOUSEUP, _onDragEnd);
+
+
+                var y = self.position.y + self.deltaY + 'px';
+                var x = self.position.x + self.deltaX + 'px';
+                self.element.style.top = y;
+                self.element.style.left = x;
+
+                if (transitionSupport) {
+                    for (var i in vendors) {
+                        var transform = vendors[i] + 'transform';
+                        self.element.style[transform] = "";
+                    }
+                }
+                self.options.handler.style.cursor = self._savedCursorState;
+
+                e.target = self.options.handler;//fix target
+                self.options.onDragEnd.call(self, e);
+            };
+
+            Dom.onMouseMove(document, _onDrag);
+            Dom.onMouseUp(document, _onDragEnd);
+        }
+
+        Dom.onMouseDown(this.options.handler, _onDragStart.bind(this));
+    };
+
+    /**
+     * Makes element draggable
+     * @param {HTMLElement} element
+     * @param {Object} options
+     * @returns {Draggable}
+     */
+    Dom.draggable = function(element, options) {
+        return new Draggable(element, options);
+    };
+
+
     /**
      * Normalized Event object
      *
@@ -251,16 +492,15 @@
      * @constructor
      */
     Dom.Event = function(e) {
-        var _e = e;
-
+        this._e = e;
         /**
          * Stops event bubbling
          */
         Dom.Event.prototype.stopPropagation = function() {
-            if (_e.stopPropagation) {
-                _e.stopPropagation();
+            if (this._e.stopPropagation) {
+                this._e.stopPropagation();
             } else {
-                _e.cancelBubble = true;
+                this._e.cancelBubble = true;
             }
         };
 
@@ -268,37 +508,31 @@
          * Prevents default behaviour
          */
         Dom.Event.prototype.preventDefault = function() {
-            if (_e.preventDefault) {
-                _e.preventDefault();
+            if (this._e.preventDefault) {
+                this._e.preventDefault();
             } else {
-                _e.returnValue = false;
+                this._e.returnValue = false;
             }
         };
 
-        /**
-         * Return native event object
-         * @returns {DOMEvent}
-         */
-        Dom.Event.prototype.event = function() {
-            return _e;
-        };
-
-
-        this.target = _e.target || _e.srcElement;
-        this.ctrlKey = _e.ctrlKey;
-        this.shiftKey = _e.shiftKey;
-        this.altKey = _e.altKey;
-        this.layerY = _e.layerY || _e.offsetY;
-        this.layerX = _e.layerX || _e.offsetX;
-        this.x = _e.x || _e.clientX;
-        this.y = _e.y || _e.clientY;
-        this.keyCode = _e.keyCode;
+        this.target = this._e.target || this._e.srcElement;
+        this.ctrlKey = this._e.ctrlKey;
+        this.shiftKey = this._e.shiftKey;
+        this.altKey = this._e.altKey;
+        this.layerY = this._e.layerY || this._e.offsetY;
+        this.layerX = this._e.layerX || this._e.offsetX;
+        this.x = this._e.x ||this. _e.clientX;
+        this.y = this._e.y || this._e.clientY;
+        this.keyCode = this._e.keyCode;
+        this.name = this.type = this._e.type;
+        this.path = this._e.path;
+        this.timeStamp = this._e.timeStamp;
         if (ie & ie < 9) {
-            this.button = _e.button == 1 ? Dom.Mouse.BUTTON_LEFT : (_e.button == 4 ? Dom.Mouse.BUTTON_MIDDLE : Dom.Mouse.BUTTON_RIGHT);
-        } else if (_e.hasOwnProperty('which')) {
-            this.button = _e.which == 1 ? Dom.Mouse.BUTTON_LEFT : (_e.which == 2 ? Dom.Mouse.BUTTON_MIDDLE : Dom.Mouse.BUTTON_RIGHT);
+            this.button = this._e.button == 1 ? Dom.Mouse.BUTTON_LEFT : (this._e.button == 4 ? Dom.Mouse.BUTTON_MIDDLE : Dom.Mouse.BUTTON_RIGHT);
+        } else if (this._e.hasOwnProperty('which')) {
+            this.button = this._e.which == 1 ? Dom.Mouse.BUTTON_LEFT : (this._e.which == 2 ? Dom.Mouse.BUTTON_MIDDLE : Dom.Mouse.BUTTON_RIGHT);
         } else {
-            this.button = _e.button;
+            this.button = this._e.button;
         }
     };
 
@@ -1636,14 +1870,6 @@
         //add most used selectors
         Dom.body = Dom.findByTagName('body')[0];
         Dom.head = Dom.findByTagName('head')[0];
-
-        //widget support
-        for (var selector in _domWidgets) {
-            var definition = _domWidgets[selector];
-            _each(Dom.find(selector), function (element) {
-                _factoryWidget(element, selector, definition);
-            });
-        }
 
         var event = new Dom.Event(e);
         _isDomReady = event;

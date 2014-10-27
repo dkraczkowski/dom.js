@@ -42,6 +42,7 @@ API Reference
     - [Dom.replace](#domreplaceelement-html)
     - [Dom.remove](#domremoveelement)
     - [Dom.template](#domtemplatetpl-hash)
+    - [Dom.draggable](#domdraggableelement-options)
 
  - Event handling
     - [Dom.addListener](#domaddlistener-elementnodelistarray-event-listener)
@@ -358,12 +359,23 @@ from hash object. Supports functions, numbers and strings.
 
 #### [Example](examples/dom.template.html)
 
+### Dom.draggable(`element`, `options`)
+
+Makes html element draggable.
+
 #### Parameters
- - `html` string containings element's html
- - `className` class(es) that will be removed from the element's class attribute
+ - `element` html element
+ - `options` options hash
 
-#### [Example](examples/dom.removeclass.html)
+#### Options
+ - `axis` _String_ (`x` or `y`) constrains movement to x or y axis
+ - `grid` _Array_ ([`x`, `y`]) snaps the element to a grid
+ - `handler` _HTMLElement_ specifies on what element the drag starts
+ - `onDragStart` sets callback function which will be called when drag starts
+ - `onDragMove` sets callback function which will be called when dragged elements move
+ - `onDragEnd` sets callback function which will be called when drag ends
 
+#### [Example](examples/dom.draggable.html)
 
 ### Dom.addListener (`element|nodeList|Array`, `event`, `listener`)
 
