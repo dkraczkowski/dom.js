@@ -45,10 +45,10 @@ API Reference
     - [Dom.draggable](#domdraggableelement-options)
 
  - Utils
-    - [Dom.requestAnimationFrame](#domrequestanimationframe-callback)
-    - [Dom.cancelAnimationFrame](#domcancelanimationframe-id)
-    - [Dom.isElement](#domiselement-object)
-    - [Dom.isNode](#domisnode-object)
+    - [Dom.requestAnimationFrame](#domrequestanimationframecallback)
+    - [Dom.cancelAnimationFrame](#domcancelanimationframeid)
+    - [Dom.isElement](#domiselementobject)
+    - [Dom.isNode](#domisnodeobject)
 
  - Event handling
     - [Dom.addListener](#domaddlistener-elementnodelistarray-event-listener)
