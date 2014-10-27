@@ -4,7 +4,7 @@ DOM.js
 DOM.js is a lightweight, fast cross browser (IE 8+, FF31+, SF5+, CH31+, OP24+) library for DOM traversal, manipulation and event handling.
 Dom.js also includes drag library for simplify crossbrowser drag operations.
 
-Only 6KB compressed and gzipped!
+Only 5KB compressed and gzipped!
 
 API Reference
 =============
