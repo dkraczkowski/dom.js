@@ -387,7 +387,7 @@
                 if (gridY >= 1) {
                     deltaY = Math.round(deltaY / gridY) * gridY;
                 }
-                
+
                 switch (self.options.axis) {
                     case 'x':
                         self.deltaX = deltaX;
@@ -1912,7 +1912,6 @@
             _onDOMReady(e);
         }, false);
     }
-
 
     //export dom
     window.Dom = Dom;
