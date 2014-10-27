@@ -388,10 +388,6 @@
                     deltaY = Math.round(deltaY / gridY) * gridY;
                 }
 
-                if (self.options.grid[1] >= 1) {
-                    deltaY -= deltaY % self.options.grid[1];
-                }
-
                 switch (self.options.axis) {
                     case 'x':
                         self.deltaX = deltaX;
