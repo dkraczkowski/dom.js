@@ -284,39 +284,11 @@
     }
 
     /**
-     * Checks if given parameter is a DOMElement
-     * @param {object} element
-     * @returns {boolean}
+     * Draggable object presentation
+     * @param {HTMLElement} element
+     * @param {Object} options
+     * @constructor
      */
-    Dom.isElement = function(element) {
-        if (typeof HTMLElement === 'object') {
-            return element instanceof HTMLElement;
-        }
-
-        return element && typeof element === 'object' && element.nodeType === 1 && typeof  element.nodeName === 'string';
-    };
-
-    /**
-     * Checks wheter given parameter is a DOMNode
-     * @param node
-     * @returns {*}
-     */
-    Dom.isNode = function(node) {
-        if (typeof Node === 'object') {
-            return node instanceof Node;
-        }
-
-        return node && typeof node === 'object' && typeof node.nodeType === 'number' && typeof node.nodeName === 'string';
-    };
-
-    Dom.requestAnimationFrame = function() {
-        return requestAnimationFrame;
-    };
-
-    Dom.cancelAnimationFrame = function() {
-        return cancelAnimationFrame;
-    };
-
     var Draggable = function(element, options) {
         var options = options || {};
         this.element = element;
@@ -342,7 +314,6 @@
                 return;
             }
             e.preventDefault();
-
 
             var self = this;
             var style = _getComputedStyle(self.element);
@@ -401,18 +372,13 @@
                     self.element.style.top = self.position.y + self.deltaY + 'px';
                     self.element.style.left = self.position.x + self.deltaX + 'px';
                 }
-
-
             })();
-
 
             function _onDrag(e) {
                 var deltaX = e.x - self.startX;
                 var deltaY = e.y - self.startY;
                 var gridX = self.options.grid[0];
                 var gridY = self.options.grid[1];
-
-
 
                 if (gridX >= 1) {
                     deltaX = Math.round(deltaX / gridX) * gridX;
@@ -421,7 +387,6 @@
                 if (gridY >= 1) {
                     deltaY = Math.round(deltaY / gridY) * gridY;
                 }
-
 
                 if (self.options.grid[1] >= 1) {
                     deltaY -= deltaY % self.options.grid[1];
@@ -465,13 +430,55 @@
 
                 e.target = self.options.handler;//fix target
                 self.options.onDragEnd.call(self, e);
-            };
+            }
 
             Dom.onMouseMove(document, _onDrag);
             Dom.onMouseUp(document, _onDragEnd);
         }
-
         Dom.onMouseDown(this.options.handler, _onDragStart.bind(this));
+    };
+
+    /**
+     * Checks if given object is a DOMElement
+     * @param {object} element
+     * @returns {boolean}
+     */
+    Dom.isElement = function(element) {
+        if (typeof HTMLElement === 'object') {
+            return element instanceof HTMLElement;
+        }
+
+        return element && typeof element === 'object' && element.nodeType === 1 && typeof  element.nodeName === 'string';
+    };
+
+    /**
+     * Checks if given parameter is a DOMNode
+     * @param node
+     * @returns {*}
+     */
+    Dom.isNode = function(node) {
+        if (typeof Node === 'object') {
+            return node instanceof Node;
+        }
+        return node && typeof node === 'object' && typeof node.nodeType === 'number' && typeof node.nodeName === 'string';
+    };
+
+    /**
+     * Polyfill for window.requestAnimationFrame
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame
+     * @returns {Function}
+     */
+    Dom.requestAnimationFrame = function() {
+        return requestAnimationFrame;
+    };
+
+    /**
+     * Polyfill for window.cancelAnimationFrame
+     * @see https://developer.mozilla.org/en-US/docs/Web/API/window.cancelAnimationFrame
+     * @returns {Function}
+     */
+    Dom.cancelAnimationFrame = function() {
+        return cancelAnimationFrame;
     };
 
     /**

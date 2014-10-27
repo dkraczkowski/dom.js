@@ -44,6 +44,12 @@ API Reference
     - [Dom.template](#domtemplatetpl-hash)
     - [Dom.draggable](#domdraggableelement-options)
 
+ - Utils
+    - [Dom.requestAnimationFrame](#domrequestanimationframe-callback)
+    - [Dom.cancelAnimationFrame](#domcancelanimationframe-id)
+    - [Dom.isElement](#domiselement-object)
+    - [Dom.isNode](#domisnode-object)
+
  - Event handling
     - [Dom.addListener](#domaddlistener-elementnodelistarray-event-listener)
     - [Dom.removeListener](#domremovelistener-elementnodelistarray-event-listener)
@@ -376,6 +382,34 @@ Makes html element draggable.
  - `onDragEnd` sets callback function which will be called when drag ends
 
 #### [Example](examples/dom.draggable.html)
+
+
+
+### Dom.requestAnimationFrame(`callback`)
+
+The Window.requestAnimationFrame() method tells the browser that you wish to perform an animation and requests that the browser call a specified function to update an animation before the next repaint. The method takes as an argument a callback to be invoked before the repaint.
+[learn more](https://developer.mozilla.org/en-US/docs/Web/API/window.requestAnimationFrame)
+
+### Dom.cancelAnimationFrame(`id`)
+
+Cancels an animation frame request previously scheduled through a call to `Dom.requestAnimationFrame`
+[learn more](https://developer.mozilla.org/en-US/docs/Web/API/Window.cancelAnimationFrame)
+
+### Dom.isElement(`object`)
+
+Checks if given object is a DOMElement.
+
+#### Parameters
+
+ - `object` input object
+
+### Dom.isNode(`object`)
+
+Checks if given object is a DOMNode.
+
+#### Parameters
+
+ - `object` input object
 
 ### Dom.addListener (`element|nodeList|Array`, `event`, `listener`)
 
