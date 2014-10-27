@@ -299,7 +299,8 @@
             handler: options.handler || element,
             cursor: options.cursor || 'move',
             axis: options.axis || false,
-            grid: options.grid || [1, 1]
+            grid: options.grid || [1, 1],
+            constrain: options.constrain || false
         };
         this.isDragging = false;
         this.position = {
@@ -324,6 +325,7 @@
             self.position.y = parseInt(style['top']);
             self.startX = e.x;
             self.startY = e.y;
+            self.offset = Dom.offset(self.element);
             self.options.onDragStart.call(self, e);
 
             if (isNaN(self.position.x)) {
@@ -386,6 +388,42 @@
 
                 if (gridY >= 1) {
                     deltaY = Math.round(deltaY / gridY) * gridY;
+                }
+
+                var isConstainedToElement = Dom.isElement(self.options.constrain);
+                var isConstainedToRectangle = _isArray(self.options.constrain) && self.options.constrain.length === 4;
+
+                if (self.options.constrain && (isConstainedToElement || isConstainedToRectangle)) {
+                    if (isConstainedToElement) {
+                        var offset = Dom.offset(self.options.constrain);
+                        var rectangle = [offset.left, offset.top, offset.width, offset.height];
+                    } else {
+                        var rectangle = self.options.constrain;
+                    }
+
+                    var minDeltaY = rectangle[1] - self.offset.top;
+                    var maxDeltaY = rectangle[1] + rectangle[3] - (self.offset.top + self.offset.height);
+
+                    if (deltaY <= 0 && deltaY < minDeltaY) {
+                        deltaY = minDeltaY;
+                    }
+
+                    if (deltaY >= 0 && deltaY > maxDeltaY) {
+                        deltaY = maxDeltaY;
+                    }
+
+                    var minDeltaX = rectangle[0] - self.offset.left;
+                    var maxDeltaX = rectangle[0] + rectangle[2] - (self.offset.left + self.offset.width);
+
+                    if (deltaX <= 0 && deltaX < minDeltaX) {
+                        deltaX = minDeltaX;
+                    }
+
+                    if (deltaX >= 0 && deltaX > maxDeltaX) {
+                        deltaX = maxDeltaX;
+                    }
+
+
                 }
 
                 switch (self.options.axis) {

@@ -380,6 +380,7 @@ Makes html element draggable.
  - `onDragStart` sets callback function which will be called when drag starts
  - `onDragMove` sets callback function which will be called when dragged elements move
  - `onDragEnd` sets callback function which will be called when drag ends
+ - `constrain` _HTMLElement_ constrains movement to element's area or given box `[x0, y0, width, height]`
 
 #### [Example](examples/dom.draggable.html)
 

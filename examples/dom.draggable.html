@@ -66,6 +66,14 @@
             top: 200px;
             left: 200px;
         }
+
+        #drag-container {
+            top: 400px;
+            width: 400px;
+            height: 200px;
+            border: 1px solid red;
+            position: absolute;
+        }
     </style>
 </head>
 <body>
@@ -88,12 +96,20 @@
     <div class="centered-text">aligned to grid</div>
 </div>
 
+
+<div class="drag-container" id="drag-container">
+    <div class="draggable" id="drag-in-container">
+        <div class="centered-text">drag within container</div>
+    </div>
+</div>
+
 <script type="text/javascript">
     var el = Dom.id('simple-drag');
     var el2 = Dom.id('drag-with-handler');
     var x = Dom.id('drag-x');
     var y = Dom.id('drag-y');
     var grid = Dom.id('drag-grid');
+    var limited = Dom.id('drag-in-container');
 
     var draggable = Dom.draggable(el);
     var draggable2 = Dom.draggable(el2, {
@@ -104,6 +120,7 @@
 
     var draggableGrid = Dom.draggable(grid, {grid: [100, 100]});
 
+    var draggableInContainer = Dom.draggable(limited, {constrain: Dom.id('drag-container')});
 </script>
 </body>
 </html>
