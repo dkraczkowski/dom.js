@@ -422,8 +422,6 @@
                     if (deltaX >= 0 && deltaX > maxDeltaX) {
                         deltaX = maxDeltaX;
                     }
-
-
                 }
 
                 switch (self.options.axis) {
@@ -446,7 +444,9 @@
             function _onDragEnd(e) {
                 self.isDragging = false;
                 Dom.removeListener(document, Dom.Event.ON_MOUSEMOVE, _onDrag);
+                Dom.removeListener(document, Dom.Event.ON_TOUCHMOVE, _onDrag);
                 Dom.removeListener(document, Dom.Event.ON_MOUSEUP, _onDragEnd);
+                Dom.removeListener(document, Dom.Event.ON_TOUCHEND, _onDragEnd);
 
 
                 var y = self.position.y + self.deltaY + 'px';
@@ -467,9 +467,12 @@
             }
 
             Dom.onMouseMove(document, _onDrag);
+            Dom.onTouchMove(document, _onDrag);//support touch devices
             Dom.onMouseUp(document, _onDragEnd);
+            Dom.onTouchEnd(document, _onDragEnd);//support touch devices
         }
         Dom.onMouseDown(this.options.handler, _onDragStart.bind(this));
+        Dom.onTouchStart(this.options.handler, _onDragStart.bind(this));//support touch devices
     };
 
     /**
@@ -597,6 +600,14 @@
     Dom.Event.ON_MOUSEOUT = 'mouseout';
     Dom.Event.ON_MOUSEUP = 'mouseup';
     Dom.Event.ON_MOUSEMOVE = 'mousemove';
+
+    /**
+     * Touch Events
+     */
+    Dom.Event.ON_TOUCHSTART = 'touchstart';
+    Dom.Event.ON_TOUCHEND = 'touchend';
+    Dom.Event.ON_TOUCHMOVE = 'touchmove';
+    Dom.Event.ON_TOUCHCANCEL = 'touchcancel';
 
     /**
      * Keyboard events
@@ -944,6 +955,53 @@
         return Dom.addListener(element, Dom.Event.ON_MOUSEMOVE, listener);
     };
 
+    /**
+     * Bind an event handler to the “touchstart” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {Dom|false}
+     */
+    Dom.onTouchStart = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_TOUCHSTART, listener);
+    };
+
+    /**
+     * Bind an event handler to the “touchend” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {Dom|false}
+     */
+    Dom.onTouchEnd = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_TOUCHEND, listener);
+    };
+
+    /**
+     * Bind an event handler to the “touchmove” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {Dom|false}
+     */
+    Dom.onTouchMove = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_TOUCHMOVE, listener);
+    };
+
+    /**
+     * Bind an event handler to the “touchcancel” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {Dom|false}
+     */
+    Dom.onTouchCancel = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_TOUCHCANCEL, listener);
+    };
 
     /**
      * Bind an event handler to the “ondrag” JavaScript event
