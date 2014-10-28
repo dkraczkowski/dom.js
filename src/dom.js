@@ -299,7 +299,8 @@
             handler: options.handler || element,
             cursor: options.cursor || 'move',
             axis: options.axis || false,
-            grid: options.grid || [1, 1]
+            grid: options.grid || [1, 1],
+            constrain: options.constrain || false
         };
         this.isDragging = false;
         this.position = {
@@ -324,6 +325,7 @@
             self.position.y = parseInt(style['top']);
             self.startX = e.x;
             self.startY = e.y;
+            self.offset = Dom.offset(self.element);
             self.options.onDragStart.call(self, e);
 
             if (isNaN(self.position.x)) {
@@ -388,6 +390,40 @@
                     deltaY = Math.round(deltaY / gridY) * gridY;
                 }
 
+                var isConstainedToElement = Dom.isElement(self.options.constrain);
+                var isConstainedToRectangle = _isArray(self.options.constrain) && self.options.constrain.length === 4;
+
+                if (self.options.constrain && (isConstainedToElement || isConstainedToRectangle)) {
+                    if (isConstainedToElement) {
+                        var offset = Dom.offset(self.options.constrain);
+                        var rectangle = [offset.left, offset.top, offset.width, offset.height];
+                    } else {
+                        var rectangle = self.options.constrain;
+                    }
+
+                    var minDeltaY = rectangle[1] - self.offset.top;
+                    var maxDeltaY = rectangle[1] + rectangle[3] - (self.offset.top + self.offset.height);
+
+                    if (deltaY <= 0 && deltaY < minDeltaY) {
+                        deltaY = minDeltaY;
+                    }
+
+                    if (deltaY >= 0 && deltaY > maxDeltaY) {
+                        deltaY = maxDeltaY;
+                    }
+
+                    var minDeltaX = rectangle[0] - self.offset.left;
+                    var maxDeltaX = rectangle[0] + rectangle[2] - (self.offset.left + self.offset.width);
+
+                    if (deltaX <= 0 && deltaX < minDeltaX) {
+                        deltaX = minDeltaX;
+                    }
+
+                    if (deltaX >= 0 && deltaX > maxDeltaX) {
+                        deltaX = maxDeltaX;
+                    }
+                }
+
                 switch (self.options.axis) {
                     case 'x':
                         self.deltaX = deltaX;
@@ -408,7 +444,9 @@
             function _onDragEnd(e) {
                 self.isDragging = false;
                 Dom.removeListener(document, Dom.Event.ON_MOUSEMOVE, _onDrag);
+                Dom.removeListener(document, Dom.Event.ON_TOUCHMOVE, _onDrag);
                 Dom.removeListener(document, Dom.Event.ON_MOUSEUP, _onDragEnd);
+                Dom.removeListener(document, Dom.Event.ON_TOUCHEND, _onDragEnd);
 
 
                 var y = self.position.y + self.deltaY + 'px';
@@ -429,9 +467,12 @@
             }
 
             Dom.onMouseMove(document, _onDrag);
+            Dom.onTouchMove(document, _onDrag);//support touch devices
             Dom.onMouseUp(document, _onDragEnd);
+            Dom.onTouchEnd(document, _onDragEnd);//support touch devices
         }
         Dom.onMouseDown(this.options.handler, _onDragStart.bind(this));
+        Dom.onTouchStart(this.options.handler, _onDragStart.bind(this));//support touch devices
     };
 
     /**
@@ -559,6 +600,14 @@
     Dom.Event.ON_MOUSEOUT = 'mouseout';
     Dom.Event.ON_MOUSEUP = 'mouseup';
     Dom.Event.ON_MOUSEMOVE = 'mousemove';
+
+    /**
+     * Touch Events
+     */
+    Dom.Event.ON_TOUCHSTART = 'touchstart';
+    Dom.Event.ON_TOUCHEND = 'touchend';
+    Dom.Event.ON_TOUCHMOVE = 'touchmove';
+    Dom.Event.ON_TOUCHCANCEL = 'touchcancel';
 
     /**
      * Keyboard events
@@ -906,6 +955,53 @@
         return Dom.addListener(element, Dom.Event.ON_MOUSEMOVE, listener);
     };
 
+    /**
+     * Bind an event handler to the “touchstart” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {Dom|false}
+     */
+    Dom.onTouchStart = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_TOUCHSTART, listener);
+    };
+
+    /**
+     * Bind an event handler to the “touchend” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {Dom|false}
+     */
+    Dom.onTouchEnd = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_TOUCHEND, listener);
+    };
+
+    /**
+     * Bind an event handler to the “touchmove” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {Dom|false}
+     */
+    Dom.onTouchMove = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_TOUCHMOVE, listener);
+    };
+
+    /**
+     * Bind an event handler to the “touchcancel” JavaScript event
+     *
+     * @see Dom.addListener
+     * @param {HTMLElement|NodeList} element
+     * @param listener
+     * @returns {Dom|false}
+     */
+    Dom.onTouchCancel = function(element, listener) {
+        return Dom.addListener(element, Dom.Event.ON_TOUCHCANCEL, listener);
+    };
 
     /**
      * Bind an event handler to the “ondrag” JavaScript event
@@ -1912,6 +2008,7 @@
             _onDOMReady(e);
         }, false);
     }
+
 
     //export dom
     window.Dom = Dom;
