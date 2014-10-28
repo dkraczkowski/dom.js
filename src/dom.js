@@ -226,7 +226,7 @@
     var eventPrefix = document.addEventListener ? '' : 'on';
     var createEvent = document.createEvent ? 'createEvent' : 'createEventObject';
     var dispatchEvent = document.dispatchEvent ? 'dispatchEvent' : 'fireEvent';
-    var vendors = ['Moz', 'ms', 'Webkit', 'O', ''];
+    var vendors = ['-moz-', '-ms-', '-webkit-', '-o-', ''];
     var cssNameProperty = function(prop) {return prop;};
     var requestAnimationFrame = window.requestAnimationFrame;
     var cancelAnimationFrame = window.cancelAnimationFrame || window.cancelRequestAnimationFrame;
@@ -344,14 +344,14 @@
             Dom.css(self.element, {
                 position: position,
                 top: self.position.y + 'px',
-                left: self.position.x + 'px'
-            });
-
-            Dom.css(self.options.handler, {
+                left: self.position.x + 'px',
                 '-moz-user-select': 'none',
                 '-webkit-user-select': 'none',
                 'user-select': 'none',
-                '::selection': 'none',
+                '::selection': 'none'
+            });
+
+            Dom.css(self.options.handler, {
                 cursor: self.options.cursor
             });
 
@@ -364,6 +364,7 @@
                 }
                 var y = self.deltaY + 'px';
                 var x = self.deltaX + 'px';
+
 
                 if (transitionSupport) {
                     for (var i in vendors) {
@@ -382,11 +383,11 @@
                 var gridX = self.options.grid[0];
                 var gridY = self.options.grid[1];
 
-                if (gridX >= 1) {
+                if (gridX > 1) {
                     deltaX = Math.round(deltaX / gridX) * gridX;
                 }
 
-                if (gridY >= 1) {
+                if (gridY > 1) {
                     deltaY = Math.round(deltaY / gridY) * gridY;
                 }
 

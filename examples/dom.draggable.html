@@ -120,7 +120,12 @@
 
     var draggableGrid = Dom.draggable(grid, {grid: [100, 100]});
 
-    var draggableInContainer = Dom.draggable(limited, {constrain: Dom.id('drag-container')});
+    var draggableInContainer = Dom.draggable(limited, {
+        constrain: Dom.id('drag-container'),
+        onDragStart: function() {console.log('drag started', this)},
+        onDragEnd: function() {console.log('drag end', this)}
+
+    });
 </script>
 </body>
 </html>
