@@ -4,7 +4,7 @@
  *
  * Supports
  *
- * @author Dawid Kraczowski <Crac>
+ * @author Dawid Kraczowski <Krac>
  * @license MIT
  */
 ;(function (window, document, undefined) {
