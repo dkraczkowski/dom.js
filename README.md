@@ -23,9 +23,9 @@ API Reference
 
 
  - DOM manipulation
-    - [Dom.offset] (#domoffsetelement)
-    - [Dom.width] (#domwidthelement)
-    - [Dom.height] (#domheightelement)
+    - [Dom.offset](#domoffsetelement)
+    - [Dom.width](#domwidthelement)
+    - [Dom.height](#domheightelement)
     - [Dom.attribute](#domattributeelement-attribute)
     - [Dom.css](#domcsselement-style)
     - [Dom.getClass](#domgetclasselement)
